@@ -32,13 +32,22 @@ class CounterPage extends StatelessWidget {
       body: BlocBuilder<CounterBloc, int>(
         builder: (_, count) {
           return Center(
-            child: Text(
-              // Выводим каунт которым управляет и который
-              // прослушивает Блок строитель
-              '$count',
-              // Указываем стиль текста, чтоб менялся цвет
-              // когда меняет тему приложения
-              style: Theme.of(context).textTheme.headline1,
+            child: Container(
+              //width: 50.0,
+              //height: 50.0,
+              child: FloatingActionButton(
+                child: Center(
+                child: Text(
+                // Выводим каунт которым управляет и который
+                // прослушивает Блок строитель
+                '$count',
+                // Указываем стиль текста, чтоб менялся цвет
+                // когда меняет тему приложения
+                style: Theme.of(context).textTheme.headline6,
+                ),),
+                onPressed: (){},
+              ),
+              //),
             ),
           );
         },
