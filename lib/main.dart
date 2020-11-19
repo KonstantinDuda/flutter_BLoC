@@ -1,75 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:async';
-/*
-import 'view/home_page.dart';
-import 'bloc/theme_bloc.dart';
-import 'theme/theme_state.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      builder: (context) => ThemeBloc(),
-      child: BlocBuilder<ThemeBloc, ThemeState>(
-        builder: _buildWithTheme,
-      ),
-    );
-  }
-
-  Widget _buildWithTheme(BuildContext context, ThemeState state) {
-    return MaterialApp(
-      title: 'MaterialApp',
-      home: HomePage(),
-      theme: state.themeData,
-    );
-  }
-}*/
-
-class SimpleBlocObserver extends BlocObserver {
-  @override
-  void onEvent(Bloc bloc, Object event) {
-    print(event);
-    super.onEvent(bloc, event);
-  }
-
-  @override
-  void onChange(Cubit cubit, Change change) {
-    print(change);
-    super.onChange(cubit, change);
-  }
-
-  @override
-  void onTransition(Bloc bloc, Transition transition) {
-    print(transition);
-    super.onTransition(bloc, transition);
-  }
-
-  @override
-  void onError(Cubit cubit, Object error, StackTrace stackTrace) {
-    print(error);
-    super.onError(cubit, error, stackTrace);
-  }
-}
+import 'view/counter_page.dart';
+import 'bloc/observer.dart';
+import 'bloc/theme_cubit.dart';
+import 'bloc/counter_bloc.dart';
 
 void main() {
+  // Обьявляем, что нужно использовать наш Делегат (Observer)
   Bloc.observer = SimpleBlocObserver();
   runApp(App());
 }
 
+// Создаем класс - виджет
 class App extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    // Поставщик предоставляет блок своим дочерним елементам
+    // через контекст. Он используется как виджет внедрения
+    // зависимостей. Чаще используется для создания новых
+    // блоков, которые будут доступны остальному в поддереву.
+    // Если отвечает за создание блока, автоматически 
+    // обрабатывает закрытие блока
+    // Может использоваться для предоставления существующего 
+    // блока новой части дерева виджетов
     return BlocProvider(
+      // Возвращает ThemeCubit через context
       create: (_) => ThemeCubit(),
+      // Блок строитель обрабатывает создание виджета в 
+      // ответ на новое состояние. (потенциально) Функция строитель может 
+      // вызываться несколько раз.
+      // Является дженериком. Использует класс управляющий 
+      // состоянием и состояние как второй елемент (в данном случае)
       child: BlocBuilder<ThemeCubit, ThemeData>(
+        // При необходимости можно указать  кубит, ограниченный
+        // одним виджетом и недоступный через провайдер и текущий контекст 
         builder: (_, theme) {
           return MaterialApp(
             theme: theme,
             home: BlocProvider(
+              // Добавляем в контекст блок счетчика
               create: (_) => CounterBloc(),
               child: CounterPage(),
             ),
@@ -77,104 +48,5 @@ class App extends StatelessWidget {
         },
       ),
     );
-  }
-}
-
-class CounterPage extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Counter on SwitchTheme')),
-      body: BlocBuilder<CounterBloc, int>(
-        builder: (_, count) {
-          return Center(
-            child: Text(
-              '$count',
-              style: Theme.of(context).textTheme.headline1,
-            ),
-          );
-        },
-      ),
-      floatingActionButton: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              child: const Icon(Icons.add),
-              onPressed: () =>
-                context.read<CounterBloc>().add(CounterEvent.increment),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              child: const Icon(Icons.remove),
-              onPressed: () => 
-                context.read<CounterBloc>().add(CounterEvent.decrement),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              child: const Icon(Icons.brightness_6),
-              onPressed: () => context.read<ThemeCubit>().toggleTheme(),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              backgroundColor: Colors.red,
-              child: const Icon(Icons.error),
-              onPressed: () => context.read<CounterBloc>().add(null),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-enum CounterEvent {increment, decrement}
-
-class CounterBloc extends Bloc<CounterEvent, int> {
-  CounterBloc() : super(0);
-
-  @override 
-  Stream<int> mapEventToState(CounterEvent event) async* {
-    switch (event) {
-      case CounterEvent.decrement:
-        yield state - 1;
-        break;
-      case CounterEvent.increment:
-        yield state + 1;
-        break;
-      default:
-        addError(Exception('unsupported event'));
-    }
-  }
-}
-
-class ThemeCubit extends Cubit<ThemeData> {
-  ThemeCubit() : super(_lightTheme);
-
-  static final _lightTheme = ThemeData(
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      foregroundColor: Colors.white,
-    ),
-    brightness: Brightness.light,
-  );
-
-  static final _darkTheme = ThemeData(
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      foregroundColor: Colors.black,
-    ),
-    brightness: Brightness.dark,
-  );
-
-  void toggleTheme() {
-    emit(state.brightness == Brightness.dark ? _lightTheme : _darkTheme);
   }
 }
