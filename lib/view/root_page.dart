@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:theme_switch/bloc/provider_bloc.dart';
+
 import '../bloc/counter_bloc.dart';
-import '../bloc/theme_cubit.dart';
+//import '../bloc/theme_cubit.dart';
+import 'my_drawer.dart';
 //import 'my_dialog.dart';
 
 class RootPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return /*BlocListener<ProviderBloc, ProviderState>(
+      listener: (context, state) {
+        if (state is ChackState) {
+          Navigator.of(context).pushNamed('/chackPage');
+        }
+      },
+    child:*/ Scaffold(
       appBar: AppBar(title: const Text('Counter on SwitchTheme')),
-      drawer: Drawer(
+      drawer: MyDrawer(),  /*Drawer(
         child: Center( 
           child: Container(
             width: 50.0,
@@ -23,7 +32,7 @@ class RootPage extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      ),*/
       // Блок строитель обрабатывает создание виджета в 
       // ответ на новое состояние. 
       // (потенциально) Функция строитель может 
@@ -46,7 +55,10 @@ class RootPage extends StatelessWidget {
                 // когда меняет тему приложения
                 style: Theme.of(context).textTheme.headline6,
                 ),),
-                onPressed: (){},
+                onPressed: (){
+                  //Navigator.pushNamed(context, '/chackPage');
+                  BlocProvider.of<ProviderBloc>(context).add(ProviderEvent.chackPage);
+                },
               ),
               //),
             ),
@@ -109,6 +121,7 @@ class RootPage extends StatelessWidget {
           ),*/
         ],
       ),
+    //),
     );
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../bloc/provider_bloc.dart';
 import '../bloc/counter_bloc.dart';
-import '../bloc/theme_cubit.dart';
+//import '../bloc/theme_cubit.dart';
+import 'my_drawer.dart';
 //import 'my_dialog.dart';
 
 class ChackPage extends StatelessWidget {
@@ -11,7 +13,7 @@ class ChackPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Counter on SwitchTheme. ChackPage')),
-      drawer: Drawer(
+      drawer: MyDrawer(),  /*Drawer(
         child: Center( 
           child: Container(
             width: 50.0,
@@ -23,7 +25,7 @@ class ChackPage extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      ),*/
       // Блок строитель обрабатывает создание виджета в 
       // ответ на новое состояние. 
       // (потенциально) Функция строитель может 
@@ -46,7 +48,10 @@ class ChackPage extends StatelessWidget {
                 // когда меняет тему приложения
                 style: Theme.of(context).textTheme.headline6,
                 ),),
-                onPressed: (){},
+                onPressed: (){
+                  //Navigator.of(context).pop();
+                  BlocProvider.of<ProviderBloc>(context).add(ProviderEvent.rootPage);
+                },
               ),
               //),
             ),
