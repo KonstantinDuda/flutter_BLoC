@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/counter_bloc.dart';
 import '../bloc/theme_cubit.dart';
+//import 'my_dialog.dart';
 
 class CounterPage extends StatelessWidget {
 
@@ -92,7 +93,14 @@ class CounterPage extends StatelessWidget {
             child: FloatingActionButton(
               backgroundColor: Colors.red,
               child: const Icon(Icons.error),
-              onPressed: () => context.read<CounterBloc>().add(null),
+              onPressed: () /*async {
+                await Navigator.push(context, 
+                  PageRouteBuilder(
+                    opaque: false, // Открывать не на полный экран
+                    pageBuilder: (context, _, __) => MyDialog()),
+                ); 
+              },*/
+              => context.read<CounterBloc>().add(null),
             ),
           ),
         ],
