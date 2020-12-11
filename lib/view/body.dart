@@ -50,7 +50,9 @@ class Body extends StatelessWidget {
             /*Padding(
               padding: const EdgeInsets.only(right: 50.0,bottom: 5.0)  ,//.symmetric(vertical: 5.0),
               child:*/
-              Container( padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0), alignment: Alignment.bottomRight,
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0), 
+                alignment: Alignment.bottomRight,
                 child: FloatingActionButton(
                 child: Icon(/*Icons.add*/ icon),
                 onPressed: () =>
@@ -61,6 +63,21 @@ class Body extends StatelessWidget {
                     icon == Icons.add ? 
                     context.read<CounterBloc>().add(CounterEvent.increment) : 
                     context.read<CounterBloc>().add(CounterEvent.decrement) ,
+              ),
+            ),
+            Container(
+                padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0), 
+                alignment: Alignment.bottomRight ,
+                child: FloatingActionButton(
+                child: Icon(Icons.date_range),
+                onPressed: () {}/*=>
+                    // Благодаря тому, что у нас есть доступ к блоку счетчика
+                    // так-как мы добавили его в провайдере в main
+                    // теперь мы можем считать из контекста с указанием
+                    // класса управляющего счетчиком и добавить событие
+                    icon == Icons.add ? 
+                    context.read<CounterBloc>().add(CounterEvent.increment) : 
+                    context.read<CounterBloc>().add(CounterEvent.decrement) ,*/
               ),
             ),
           //],
