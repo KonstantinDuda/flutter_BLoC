@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/provider_bloc.dart';
 
 class MyDialog extends StatelessWidget {
   final textDialog = TextEditingController();
@@ -19,13 +21,15 @@ class MyDialog extends StatelessWidget {
       actions: <Widget>[
         FlatButton(
           onPressed: () {
-            Navigator.pop(context, /*true*/ '');
+            BlocProvider.of<ProviderBloc>(context)
+                        .add(ProviderEvent.rootPage);
+            //Navigator.pop(context, /*true*/ '');
           },
           child: Text('Отмена'),
         ),
         FlatButton(
           onPressed: () {
-            Navigator.pop(context, /*false*/ textDialog.text);
+            //Navigator.pop(context, /*false*/ textDialog.text);
           },
           child: Text('Сохранить'),
         ),

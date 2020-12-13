@@ -70,7 +70,10 @@ class Body extends StatelessWidget {
                 alignment: Alignment.bottomRight ,
                 child: FloatingActionButton(
                 child: Icon(Icons.date_range),
-                onPressed: () {}/*=>
+                onPressed: () {
+                  BlocProvider.of<ProviderBloc>(context)
+                        .add(ProviderEvent.dialog);
+                }/*=>
                     // Благодаря тому, что у нас есть доступ к блоку счетчика
                     // так-как мы добавили его в провайдере в main
                     // теперь мы можем считать из контекста с указанием

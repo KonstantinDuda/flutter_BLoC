@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'view/counter_page.dart';
+
+import 'view/horizontal_page.dart';
+import 'view/my_dialog.dart';
+//import 'view/counter_page.dart';
+//import 'view/root_page.dart';
+import 'view/chack_page.dart';
 import 'bloc/observer.dart';
 import 'bloc/theme_cubit.dart';
 import 'bloc/counter_bloc.dart';
+import 'bloc/provider_bloc.dart';
 
 void main() {
   // Обьявляем, что нужно использовать наш Делегат (Observer)
   Bloc.observer = SimpleBlocObserver();
-  runApp(App());
+  runApp(
+    BlocProvider(
+      create: (context) => ProviderBloc(),
+      child: App(),
+    ),
+    );
 }
 
 // Создаем класс - виджет
@@ -26,6 +37,8 @@ class App extends StatelessWidget {
     // Может использоваться для предоставления существующего 
     // блока новой части дерева виджетов
     return BlocProvider(
+      create: (_) => CounterBloc(), 
+      child: BlocProvider(
       // Возвращает ThemeCubit через context
       create: (_) => ThemeCubit(),
       // Блок строитель обрабатывает создание виджета в 
@@ -38,14 +51,41 @@ class App extends StatelessWidget {
         // одним виджетом и недоступный через провайдер и текущий контекст 
         builder: (_, theme) {
           return MaterialApp(
+            home: BlocBuilder<ProviderBloc, ProviderState>(
+              builder: (_, state) {
+                if(state is RootState) {
+                  return HorizontalPage();
+                } else if(state is ChackState) {
+                  return ChackPage();
+                } else if(state is DialogState) {
+                  return MyDialog();
+                }
+              }//=> state is RootState ? HorizontalPage() /*RootPage()*/ : ChackPage(),
+            ),
+            /*routes: {
+              '/': (context) {
+                return /*BlocProvider(
+                  create: (_) => CounterBloc(),
+                  child:*/ RootPage();//,
+                //);
+              },
+              '/chackPage': (context) {
+                return /*BlocProvider(
+                  create: (_) => CounterBloc(),
+                  child:*/ ChackPage();//,
+                //);
+              },
+            },
+            initialRoute: '/',*/
             theme: theme,
-            home: BlocProvider(
+            /*home: BlocProvider(
               // Добавляем в контекст блок счетчика
               create: (_) => CounterBloc(),
               child: CounterPage(),
-            ),
+            ),*/
           );
         },
+      ),
       ),
     );
   }

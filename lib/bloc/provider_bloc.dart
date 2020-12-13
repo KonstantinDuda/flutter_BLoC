@@ -1,14 +1,16 @@
-import 'package:flutter/material.dart';
+//import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-enum ProviderEvent {rootPage, chackPage}
+enum ProviderEvent {rootPage, chackPage, dialog}
 
-@immutable 
+//@immutable 
 abstract class ProviderState {}
 
 class RootState extends ProviderState {}
 
 class ChackState extends ProviderState {}
+
+class DialogState extends ProviderState {}
 
 class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   ProviderBloc() : super(RootState());
@@ -21,6 +23,9 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
         break;
       case ProviderEvent.chackPage:
         yield ChackState();
+        break;
+      case ProviderEvent.dialog:
+        yield DialogState();
         break;
     }
   }
