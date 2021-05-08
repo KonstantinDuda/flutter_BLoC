@@ -50,8 +50,10 @@ class HorizontalPage extends StatelessWidget {
   }
 
   _buildHorizontalLayout(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Horisontal orientation')),
+    return RootPage();
+    /*return Scaffold(
+      appBar: AppBar(title: Text('Horisontal orientation',
+        /*style: Theme.of(context).textTheme.headline6,*/),),
       drawer: MyDrawer(),
       body: Row(
         //mainAxisSize: MainAxisSize.min,
@@ -66,6 +68,6 @@ class HorizontalPage extends StatelessWidget {
             child: Body(Icons.remove), //ChackPage(),
           ),
         ],
-      ),);
+      ),);*/
   }
 }

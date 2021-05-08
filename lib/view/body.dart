@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/counter_bloc.dart';
@@ -18,7 +18,7 @@ class Body extends StatelessWidget {
         BlocBuilder<CounterBloc, int>(
           builder: (_, count) {
             return Expanded( child: Center(
-              child: /*Container(
+              child: /*Container( 
                 //width: 50.0,
                 //height: 50.0,
                 child:*/ FloatingActionButton(
@@ -54,7 +54,8 @@ class Body extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0), 
                 alignment: Alignment.bottomRight,
                 child: FloatingActionButton(
-                child: Icon(/*Icons.add*/ icon),
+                child: Icon(/*Icons.add*/ icon,
+                  /*color: Theme.of(context).iconTheme.color,*/),
                 onPressed: () =>
                     // Благодаря тому, что у нас есть доступ к блоку счетчика
                     // так-как мы добавили его в провайдере в main
@@ -69,7 +70,8 @@ class Body extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0), 
                 alignment: Alignment.bottomRight ,
                 child: FloatingActionButton(
-                child: Icon(Icons.date_range),
+                child: Icon(Icons.date_range,
+                  /*color: Theme.of(context).iconTheme.color,*/),
                 onPressed: () {
                   BlocProvider.of<ProviderBloc>(context)
                         .add(ProviderEvent.dialog);
@@ -89,4 +91,4 @@ class Body extends StatelessWidget {
     //),
     );
   }
-}
+}*/

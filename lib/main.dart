@@ -7,9 +7,11 @@ import 'view/my_dialog.dart';
 //import 'view/counter_page.dart';
 //import 'view/root_page.dart';
 import 'view/chack_page.dart';
+
+import 'bloc/root_task_bloc.dart';
 import 'bloc/observer.dart';
 import 'bloc/theme_cubit.dart';
-import 'bloc/counter_bloc.dart';
+//import 'bloc/counter_bloc.dart';
 import 'bloc/provider_bloc.dart';
 
 void main() {
@@ -37,7 +39,7 @@ class App extends StatelessWidget {
     // Может использоваться для предоставления существующего 
     // блока новой части дерева виджетов
     return BlocProvider(
-      create: (_) => CounterBloc(), 
+      create: (_) => TaskBloc(),//CounterBloc(), 
       child: BlocProvider(
       // Возвращает ThemeCubit через context
       create: (_) => ThemeCubit(),
@@ -54,10 +56,13 @@ class App extends StatelessWidget {
             home: BlocBuilder<ProviderBloc, ProviderState>(
               builder: (_, state) {
                 if(state is RootState) {
+                  print("Root State");
                   return HorizontalPage();
-                } else if(state is ChackState) {
+                } else if(state is UpdateState) {
+                  print("Update State");
                   return ChackPage();
                 } else if(state is DialogState) {
+                  print("Dialog State");
                   return MyDialog();
                 }
               }//=> state is RootState ? HorizontalPage() /*RootPage()*/ : ChackPage(),

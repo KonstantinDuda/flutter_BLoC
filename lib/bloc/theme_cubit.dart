@@ -9,6 +9,12 @@ class ThemeCubit extends Cubit<ThemeData> {
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       foregroundColor: Colors.white,
     ),
+    /*buttonTheme: const ButtonThemeData(
+      buttonColor: Colors.blue,
+    ),*/
+    /*iconTheme: const IconThemeData(
+      color: Colors.black,
+    ),*/
     textTheme: TextTheme(
       headline6: TextStyle(
         color: Colors.white,
@@ -24,6 +30,12 @@ class ThemeCubit extends Cubit<ThemeData> {
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       foregroundColor: Colors.black,
     ),
+    /*buttonTheme: ButtonThemeData(
+      buttonColor: Colors.orange,
+    ),*/
+    /*iconTheme: const IconThemeData(
+      color: Colors.white,
+    ),*/
     textTheme: TextTheme(
       headline6: TextStyle(
         color: Colors.black,

@@ -50,7 +50,8 @@ class ChackPage extends StatelessWidget {
                 ),),
                 onPressed: (){
                   //Navigator.of(context).pop();
-                  BlocProvider.of<ProviderBloc>(context).add(ProviderEvent.rootPage);
+                  BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                  //BlocProvider.of<ProviderBloc>(context).add(ProviderEvent.rootPage);
                 },
               ),
               //),
