@@ -4,15 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'view/horizontal_page.dart';
 import 'view/my_dialog.dart';
-//import 'view/counter_page.dart';
-//import 'view/root_page.dart';
 import 'view/chack_page.dart';
 
 import 'bloc/root_task_bloc.dart';
 import 'bloc/observer.dart';
 import 'bloc/theme_cubit.dart';
-//import 'bloc/counter_bloc.dart';
 import 'bloc/provider_bloc.dart';
+
+import 'database/task.dart';
+import 'database/task_event.dart';
 
 void main() {
   // Обьявляем, что нужно использовать наш Делегат (Observer)
@@ -39,7 +39,7 @@ class App extends StatelessWidget {
     // Может использоваться для предоставления существующего 
     // блока новой части дерева виджетов
     return BlocProvider(
-      create: (_) => TaskBloc(),//CounterBloc(), 
+      create: (_) => TaskBloc(list: new List<Task>())..add(TaskLoadSuccessEvent()),//CounterBloc(), 
       child: BlocProvider(
       // Возвращает ThemeCubit через context
       create: (_) => ThemeCubit(),
@@ -63,7 +63,7 @@ class App extends StatelessWidget {
                   return ChackPage();
                 } else if(state is DialogState) {
                   print("Dialog State");
-                  return MyDialog();
+                  return MyDialog(state.task);
                 }
               }//=> state is RootState ? HorizontalPage() /*RootPage()*/ : ChackPage(),
             ),

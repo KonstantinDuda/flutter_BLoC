@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 //import 'package:theme_switch/bloc/provider_bloc.dart';
-
+import '../bloc/root_task_bloc.dart';
+import '../database/task_state.dart';
+import '../database/task.dart';
 //import '../bloc/counter_bloc.dart';
 import 'root_page.dart';
 //import 'chack_page.dart';
@@ -15,11 +17,25 @@ class HorizontalPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OrientationBuilder(
+    return BlocBuilder<TaskBloc, TaskState>(builder: (context, state) {
+      List<Task> tasks;
+      if (state is TaskLoadSuccessState) {
+        if (state.tasks == null) {
+          tasks = [];
+        } else
+          tasks = state.tasks;
+      } else {
+        tasks = [];
+      }
+      print('tasks == $tasks');
+      return 
+    OrientationBuilder(
       builder: (context, orientation) {
         return orientation == Orientation.portrait
             ? _buildVerticalLayout()
             : _buildHorizontalLayout(context); //_buildHorizontalLayout();
+      },
+      );
       },
     );
     

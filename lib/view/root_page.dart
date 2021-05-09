@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import '../bloc/root_task_bloc.dart';
-//import '../bloc/provider_bloc.dart';
-import '../bloc/theme_cubit.dart';
+import '../bloc/provider_bloc.dart';
+//import '../bloc/theme_cubit.dart';
 
 import '../database/task.dart';
 import '../database/task_event.dart';
@@ -136,7 +136,7 @@ class RootPage extends StatelessWidget {
             }),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            //BlocProvider.of<ProviderBloc>(context).add(DialogEvent(null));
+            BlocProvider.of<ProviderBloc>(context).add(DialogEvent(null));
           },
           label: Text('Task'),
           icon: Icon(Icons.add),

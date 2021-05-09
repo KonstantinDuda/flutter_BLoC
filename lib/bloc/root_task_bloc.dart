@@ -70,7 +70,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       //final newList = await _database.getAllTasks();
       final newList = list;
       
-      //list.add(task);
+      newList.add(task);
       newList.sort((a,b) => a.position.compareTo(b.position));
       for(Task element in newList) {
       print("element = ${element.toMap()}");

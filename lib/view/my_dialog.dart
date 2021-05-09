@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
-//import '../bloc/theme_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../bloc/provider_bloc.dart';
+import '../bloc/root_task_bloc.dart';
+
+import '../database/task.dart';
+import '../database/task_event.dart';
 
 class MyDialog extends StatelessWidget {
-  final textDialog = TextEditingController();
+  
+  final Task task;
+  MyDialog(this.task);
 
   @override
   Widget build(BuildContext context) {
+    String newText = '';
+    if(task != null) {
+      newText = task.text;
+      print('Text in myDialog ${task.text.length}');
+    }
+    
     return Card(
       child: Row(
         children: <Widget>[
+          Expanded ( child:
           Container(
             //color: Theme.of(context).primaryColor,
             width: MediaQuery.of(context).size.width * 0.7,
@@ -23,24 +36,25 @@ class MyDialog extends StatelessWidget {
               color: Theme.of(context).primaryColor,
               child:  
               TextField(
+                onChanged: (value) => newText = value,
+                controller: TextEditingController(text: newText),
                 cursorColor: Colors.black,
                 expands: true,
                 style: Theme.of(context).textTheme.headline6,
-                controller: textDialog,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
                 autofocus: true,
               ),
             ),
-          ),
+          ),),
           VerticalDivider(width: 5.0,),
           Column(
             children: <Widget>[
               GestureDetector(
                 child: Container(
                   //margin: EdgeInsets.fromLTRB(0, 2.5, 2.5, 2.5),
-                  height: MediaQuery.of(context).size.height * 0.49,
-                  width: MediaQuery.of(context).size.width * 0.29,
+                  height: MediaQuery.of(context).size.height * 0.29,
+                  width: MediaQuery.of(context).size.width * 0.25,
                   decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(30.0)),
               color: Theme.of(context).primaryColor,),
@@ -53,17 +67,23 @@ class MyDialog extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  /*BlocProvider.of<ProviderBloc>(context)
-                      .add(ProviderEvent.rootPage);*/
-                  BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                  print("Go to the Root Page");
+                  if(task == null) {
+                    print("TaskAddedEvent($newText) in Dialog");
+                    BlocProvider.of<TaskBloc>(context).add(TaskAddedEvent(newText));
+                    BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                  } else {
+                    BlocProvider.of<TaskBloc>(context).add(TaskUpdateEvent(task.id, 0, newText));
+                    BlocProvider.of<ProviderBloc>(context).add(UpdateEvent(task));
+                  }
                 },
               ),
               Divider(height: 5.0,),
               GestureDetector(
                 child: Container(
                   //margin: EdgeInsets.fromLTRB(0, 2.5, 2.5, 2.5),
-                  height: MediaQuery.of(context).size.height * 0.49,
-                  width: MediaQuery.of(context).size.width * 0.29,
+                  height: MediaQuery.of(context).size.height * 0.29,
+                  width: MediaQuery.of(context).size.width * 0.25,
                   decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(30.0)),
               color: Theme.of(context).primaryColor,),
