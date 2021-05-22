@@ -20,9 +20,14 @@ class ThemeCubit extends Cubit<ThemeData> {
         color: Colors.white,
         fontSize: 28.0,
       ),
+      headline5: TextStyle(
+        color: Colors.black,
+        fontSize: 26.0,
+      ),
     ),
     brightness: Brightness.light,
     primaryColor: Colors.blue,
+    //primaryColorDark: Colors.black,
     accentColor: Colors.blue,
   );
 
@@ -41,9 +46,14 @@ class ThemeCubit extends Cubit<ThemeData> {
         color: Colors.black,
         fontSize: 28.0,
       ),
+      headline5: TextStyle(
+        color: Colors.white,
+        fontSize: 26.0,
+      ),
     ),
     brightness: Brightness.dark,
     primaryColor: Colors.orange,
+    //primaryColorDark: Colors.white,
     accentColor: Colors.orange,
   );
 
