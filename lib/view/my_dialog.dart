@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/provider_bloc.dart';
 import '../bloc/root_task_bloc.dart';
 
-import '../database/task.dart';
+import '../database/root_task.dart';
 import '../database/task_event.dart';
 
 class MyDialog extends StatelessWidget {
   
-  final Task task;
+  final RootTask task;
   MyDialog(this.task);
 
   @override
@@ -32,15 +32,21 @@ class MyDialog extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(30.0)),
               color: Theme.of(context).primaryColor,),
             child: Container(
-              margin: EdgeInsets.fromLTRB(20, 10, 20, 10), //EdgeInsets.all(10),
-              color: Theme.of(context).primaryColor,
+              margin: EdgeInsets.fromLTRB(5, 5, 5, 5), //EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                color: Theme.of(context).textTheme.headline6.color,
+              ),
               child:  
               TextField(
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.fromLTRB(10, 10 ,10, 10),
+                ),
                 onChanged: (value) => newText = value,
                 controller: TextEditingController(text: newText),
                 cursorColor: Colors.black,
                 expands: true,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.headline5,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
                 autofocus: true,
@@ -57,7 +63,7 @@ class MyDialog extends StatelessWidget {
                   width: MediaQuery.of(context).size.width * 0.25,
                   decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(30.0)),
-              color: Theme.of(context).primaryColor,),
+              color: Theme.of(context).primaryColor),
                   //color: Theme.of(context).primaryColor,
                   child: Center(
                     child: Text(
