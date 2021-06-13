@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_sheduler/bloc/chack_task_bloc.dart';
 
 
 import 'view/horizontal_page.dart';
-import 'view/my_dialog.dart';
+import 'view/root_page.dart';
 import 'view/chack_page.dart';
+import 'view/my_dialog.dart';
+import 'view/root_update_page.dart';
 
 import 'bloc/root_task_bloc.dart';
+import 'bloc/chack_task_bloc.dart';
+//import 'bloc/chack_task_bloc.dart';
 import 'bloc/observer.dart';
 import 'bloc/theme_cubit.dart';
 import 'bloc/provider_bloc.dart';
 
-import 'database/task.dart';
-import 'database/task_event.dart';
+import 'database/root_task.dart';
+import 'database/chack_task.dart';
+import 'database/root_task_event.dart';
+import 'database/chack_task_event.dart';
 
 void main() {
   // Обьявляем, что нужно использовать наш Делегат (Observer)
@@ -39,8 +46,11 @@ class App extends StatelessWidget {
     // Может использоваться для предоставления существующего 
     // блока новой части дерева виджетов
     return BlocProvider(
-      create: (_) => TaskBloc(list: new List<Task>())..add(TaskLoadSuccessEvent()),//CounterBloc(), 
+      // TODO Изменить или переместить
+      create: (_) => TaskBloc(list: new List<RootTask>())..add(RootTaskLoadSuccessEvent()),//CounterBloc(), 
       child: BlocProvider(
+        create: (_) => ChackTaskBloc(list: new List<ChackTask>())..add(ChackTaskLoadSuccessEvent()),
+        child: BlocProvider(
       // Возвращает ThemeCubit через context
       create: (_) => ThemeCubit(),
       // Блок строитель обрабатывает создание виджета в 
@@ -57,13 +67,16 @@ class App extends StatelessWidget {
               builder: (_, state) {
                 if(state is RootState) {
                   print("Root State");
-                  return HorizontalPage();
+                  return RootPage();
+                } else if(state is ChackState) {
+                  print("ChackState");
+                  return ChackPage(state.text);
                 } else if(state is UpdateState) {
                   print("Update State");
-                  return ChackPage();
+                  return RootUpdatePage(state.task);
                 } else if(state is DialogState) {
                   print("Dialog State");
-                  return MyDialog(state.task);
+                  return MyDialog(state.rootTask, state.chackTask);
                 }
               }//=> state is RootState ? HorizontalPage() /*RootPage()*/ : ChackPage(),
             ),
@@ -90,6 +103,7 @@ class App extends StatelessWidget {
             ),*/
           );
         },
+      ),
       ),
       ),
     );
