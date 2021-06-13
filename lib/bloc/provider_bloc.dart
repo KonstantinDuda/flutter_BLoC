@@ -2,7 +2,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../database/task.dart';
+import '../database/root_task.dart';
+import '../database/chack_task.dart';
 
 class ProviderEvent extends Equatable {
   ProviderEvent();
@@ -12,18 +13,26 @@ class ProviderEvent extends Equatable {
 }
 
 class RootEvent extends ProviderEvent {}
+class ChackEvent extends ProviderEvent {
+  final String text;
 
-class DialogEvent extends ProviderEvent {
-  final Task task;
-
-  DialogEvent(this.task);
+  ChackEvent(this.text);
 
   @override 
-  List<Object> get props => [task];
+  List<Object> get props => [text];
+}
+
+class DialogEvent extends ProviderEvent {
+  final RootTask rootTask;
+  final ChackTask chackTask;
+  DialogEvent(this.rootTask, this.chackTask);
+
+  @override 
+  List<Object> get props => [rootTask, chackTask];
 }
 
 class UpdateEvent extends ProviderEvent {
-  final Task task;
+  final RootTask task;
 
   UpdateEvent(this.task);
 
@@ -40,18 +49,26 @@ class ProviderState  extends Equatable{
 }
 
 class RootState extends ProviderState {}
+class ChackState extends ProviderState {
+  final String text;
 
-class DialogState extends ProviderState {
-  final Task task;
-
-  DialogState(this.task);
+  ChackState(this.text);
 
   @override 
-  List<Object> get props => [task];
+  List<Object> get props => [text];
+}
+
+class DialogState extends ProviderState {
+  final RootTask rootTask;
+  final ChackTask chackTask;
+  DialogState(this.rootTask, this.chackTask);
+
+  @override 
+  List<Object> get props => [rootTask, chackTask];
 }
 
 class UpdateState extends ProviderState {
-  final Task task;
+  final RootTask task;
 
   UpdateState(this.task);
 
@@ -67,9 +84,11 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     if(event is RootEvent) {
       yield RootState();
     } else if(event is DialogEvent) {
-      yield DialogState(event.task);
+      yield DialogState(event.rootTask, event.chackTask);
     } else if(event is UpdateEvent) {
       yield UpdateState(event.task);
+    } else if(event is ChackEvent) {
+      yield ChackState(event.text);
     }
   }
 }
