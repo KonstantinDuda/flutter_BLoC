@@ -7,14 +7,14 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'task.dart';
+import 'root_task.dart';
 
 class RootDBProvider {
 
   Database _db;
   RootDBProvider();
 
-  static const String nameTable = "TASKS";
+  static const String nameTableRoot = "ROOT_TASKS";
 
   Future<Database> get database async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +33,7 @@ class RootDBProvider {
     String path = join(dbPath.path, "BLoCListBuilder.db");
     return await openDatabase(path, version: 1, onOpen: (db) {
     }, onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE IF NOT EXISTS $nameTable ("
+        await db.execute("CREATE TABLE IF NOT EXISTS $nameTableRoot ("
           "id INTEGER PRIMARY KEY,"
           "position INTEGER,"
           "text TEXT,"
@@ -47,37 +47,37 @@ class RootDBProvider {
   getTask(int id) async {
     print("my_db getTask() id == $id");
     final ndb = await database;
-    var res = await ndb.query("$nameTable", where: "id = ?", whereArgs: [id]);
-    return res.isNotEmpty ? Task.fromMap(res.first) : Null;
+    var res = await ndb.query("$nameTableRoot", where: "id = ?", whereArgs: [id]);
+    return res.isNotEmpty ? RootTask.fromMap(res.first) : Null;
   }
 
-  Future<List<Task>> getAllTasks() async {
+  Future<List<RootTask>> getAllTasks() async {
     final ndb = await database;
     print('getAllTasks()');
-    var res = await ndb.query("$nameTable");
+    var res = await ndb.query("$nameTableRoot");
     print("my_db getAllTask() res == $res");
-    List<Task> list = 
-      res.isNotEmpty ? res.map((t) => Task.fromMap(t)).toList() : [];
+    List<RootTask> list = 
+      res.isNotEmpty ? res.map((t) => RootTask.fromMap(t)).toList() : [];
     return list;
   }
 
-  newTask(Task newTask) async {
+  newTask(RootTask newTask) async {
     final ndb = await database;
-    var table = await ndb.rawQuery("SELECT MAX(id)+1 as id FROM $nameTable");
+    var table = await ndb.rawQuery("SELECT MAX(id)+1 as id FROM $nameTableRoot");
     int id = table.first["id"];
     //if(id != null) {
     print("my_db newTask() id == $id");
     var raw = await ndb.rawInsert(
-      "INSERT Into $nameTable (id,position,text,allTaskCount,completedTaskCount,completedTaskProcent)"
+      "INSERT Into $nameTableRoot (id,position,text,allTaskCount,completedTaskCount,completedTaskProcent)"
       " VALUES (?,?,?,?,?,?)",
       [id, newTask.position, newTask.text, newTask.allTaskCount, newTask.completedTaskCount, newTask.completedTaskProcent]);
     return raw;
   }
 
-  updateTask(Task newTask) async {
+  updateTask(RootTask newTask) async {
     print("my_db updateTask() newTask == $newTask");
     final ndb = await database;
-    var res = await ndb.update("$nameTable", newTask.toMap(),
+    var res = await ndb.update("$nameTableRoot", newTask.toMap(),
       where: "id = ?", whereArgs: [newTask.id]);
     return res;
   }
@@ -85,7 +85,7 @@ class RootDBProvider {
   deleteTask(int id) async {
     print("my_db deleteTask() id == $id");
     final ndb = await database;
-    return ndb.delete("$nameTable", where: "id = ?", whereArgs: [id]);
+    return ndb.delete("$nameTableRoot", where: "id = ?", whereArgs: [id]);
   }
 
 }

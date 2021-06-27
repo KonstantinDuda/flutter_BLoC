@@ -1,31 +1,31 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../database/dbprovider.dart';
-import '../database/root_task.dart';
-import '../database/root_task_event.dart';
-import '../database/root_task_state.dart';
+import '../database/chack_task.dart';
+import '../database/chack_task_event.dart';
+import '../database/chack_task_state.dart';
 
-class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
+class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
   
-  List<RootTask> list = [];
+  List<ChackTask> list = [];
   //final _database = new RootDBProvider();
 
-  TaskBloc({this.list}) : super(TaskLoadInProgressState());
+  ChackTaskBloc({this.list}) : super(TaskLoadInProgressState());
 
   @override 
-  Stream<RootTaskState> mapEventToState(RootTaskEvent event) async* {
-    if(event is RootTaskLoadSuccessEvent) {
+  Stream<ChackTaskState> mapEventToState(ChackTaskEvent event) async* {
+    if(event is ChackTaskLoadSuccessEvent) {
       yield* _taskLoadedToState();
-    } else if(event is RootTaskAddedEvent) {
+    } else if(event is ChackTaskAddedEvent) {
       yield* _taskAddedToState(event);
-    } else if(event is RootTaskUpdateEvent) {
+    } else if(event is ChackTaskUpdateEvent) {
       yield* _taskUpdateToState(event);
-    } else if(event is RootTaskDeletedEvent) {
+    } else if(event is ChackTaskDeletedEvent) {
       yield* _taskDeleteToState(event);
     }
   }
 
-  Stream<RootTaskState> _taskLoadedToState() async* {
+  Stream<ChackTaskState> _taskLoadedToState() async* {
     try {
       //final newList = await _database.getAllTasks();
       final newList = list;
@@ -41,29 +41,27 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
     //yield TaskLoadSuccessState(db);
   }
 
-  Stream<RootTaskState> _taskAddedToState(RootTaskAddedEvent event) async* {
+  Stream<ChackTaskState> _taskAddedToState(ChackTaskAddedEvent event) async* {
     if(state is TaskLoadSuccessState) {
-      RootTask task;
+      ChackTask task;
       print('_taskAddedToState; list == $list');
       if(list.isEmpty) {
         print('list.isEmpty');
-        task = new RootTask(
+        task = new ChackTask(
           id: 1,
           position: 1,
           text: event.text,
-          allTaskCount: 0,
-          completedTaskCount: 0,
-          completedTaskProcent: 0.0,
+          rootID: event.rootId,
+          chack: false,
         );
       } else if(list.length > 0) {
           print('list.length > 0');
-          task = new RootTask(
+          task = new ChackTask(
           id: list[list.length -1].id +1,
           position: list.last.position +(1),
           text: event.text,
-          allTaskCount: 0,
-          completedTaskCount: 0,
-          completedTaskProcent: 0.0,
+          rootID: event.rootId,
+          chack: false,
         );
       }
       //await _database.newTask(task);
@@ -72,7 +70,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
       
       newList.add(task);
       newList.sort((a,b) => a.position.compareTo(b.position));
-      for(RootTask element in newList) {
+      for(ChackTask element in newList) {
       print("element = ${element.toMap()}");
     }
       yield TaskLoadSuccessState(newList);
@@ -80,9 +78,9 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
     }
   }
 
-  Stream<RootTaskState> _taskUpdateToState(RootTaskUpdateEvent event) async* {
+  Stream<ChackTaskState> _taskUpdateToState(ChackTaskUpdateEvent event) async* {
 
-    RootTask updateTask;
+    ChackTask updateTask;
     int updateTaskIndex;
     
     for(int i = 0; i < list.length; i++) {
@@ -92,7 +90,9 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
         updateTaskIndex = i;
       }
     }
-    if(event.newPosition == 0){
+    if(updateTask.chack != event.chackBox) {
+      updateTask.chack = event.chackBox;
+    } else if(event.newPosition == 0){
       print("if(event.newPosition == 0)");
       updateTask.text = event.newText;
     } else if(event.newPosition > 0) {
@@ -152,7 +152,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
     final newList = list;
 
     newList.sort((a,b) => a.position.compareTo(b.position));
-    for(RootTask element in newList) {
+    for(ChackTask element in newList) {
       print("element = ${element.toMap()}");
     }
     yield TaskLoadInProgressState();
@@ -160,7 +160,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
     list = newList;
   }
 
-  Stream<RootTaskState> _taskDeleteToState(RootTaskDeletedEvent event) async* {
+  Stream<ChackTaskState> _taskDeleteToState(ChackTaskDeletedEvent event) async* {
     if(state is TaskLoadSuccessState) {
       print("_taskDeleteToState; state is TaskLoadSuccessState");
       /*  Debug version
@@ -171,7 +171,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
         print("listNew[i].id == event.id");
       }
     }*/
-    RootTask updateTask;
+    ChackTask updateTask;
     //int updateTaskIndex;
     
     for(int i = 0; i < list.length; i++) {
@@ -197,7 +197,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
 
     // It Mobile and Debug version
     listNew.sort((a,b) => a.position.compareTo(b.position));
-    for(RootTask element in listNew) {
+    for(ChackTask element in listNew) {
       print("new element == ${element.toMap()}");
     }
 
