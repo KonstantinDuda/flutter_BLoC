@@ -6,9 +6,9 @@ import '../bloc/root_task_bloc.dart';
 import '../bloc/provider_bloc.dart';
 //import '../bloc/theme_cubit.dart';
 
-import '../database/task.dart';
-import '../database/task_event.dart';
-import '../database/task_state.dart';
+import '../database/root_task.dart';
+import '../database/root_task_event.dart';
+import '../database/root_task_state.dart';
 
 class RootPage extends StatelessWidget {
   //String id;
@@ -18,8 +18,8 @@ class RootPage extends StatelessWidget {
   Widget build(BuildContext context) {
     //var borderColor = Theme.of(context).accentColor;
     print("build RootPage");
-    return BlocBuilder<TaskBloc, TaskState>(builder: (context, state) {
-      List<Task> tasks;
+    return BlocBuilder<TaskBloc, RootTaskState>(builder: (context, state) {
+      List<RootTask> tasks;
       if (state is TaskLoadSuccessState) {
         if (state.tasks == null) {
           tasks = [];
@@ -36,15 +36,18 @@ class RootPage extends StatelessWidget {
         body: ListView.builder(
             itemCount: tasks == []
                 ? 0
-                : tasks
-                    .length, 
+                : tasks.length, 
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  print(state.props[index]);
+                  print("onTap: ${tasks[index].text}");
+                  BlocProvider.of<ProviderBloc>(context)
+                    .add(ChackEvent(tasks[index]));
                 },
                 onLongPress: () {
-                  print('longPress on ${tasks[index]}');
+                  print('longPress on ${tasks[index].text}');
+                  BlocProvider.of<ProviderBloc>(context)
+                      .add(UpdateEvent(tasks[index]));
                 },
                 onHorizontalDragStart: (DragStartDetails start) {
                   print(start);
@@ -74,7 +77,7 @@ class RootPage extends StatelessWidget {
                             child: Text("yes"),
                             onPressed: () {
                               BlocProvider.of<TaskBloc>(context)
-                                  .add(TaskDeletedEvent(tasks[index].id));
+                                  .add(RootTaskDeletedEvent(tasks[index].id));
                               ScaffoldMessenger.of(context)
                                   .removeCurrentSnackBar();
                             },
@@ -136,7 +139,7 @@ class RootPage extends StatelessWidget {
             }),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            BlocProvider.of<ProviderBloc>(context).add(DialogEvent(null));
+            BlocProvider.of<ProviderBloc>(context).add(DialogEvent(false, null, null));
           },
           label: Text('Task'),
           icon: Icon(Icons.add),

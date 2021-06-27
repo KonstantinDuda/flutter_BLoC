@@ -70,13 +70,13 @@ class App extends StatelessWidget {
                   return RootPage();
                 } else if(state is ChackState) {
                   print("ChackState");
-                  return ChackPage(state.text);
+                  return ChackPage(state.task);
                 } else if(state is UpdateState) {
                   print("Update State");
                   return RootUpdatePage(state.task);
                 } else if(state is DialogState) {
                   print("Dialog State");
-                  return MyDialog(state.rootTask, state.chackTask);
+                  return MyDialog(state.changeObj, state.rootTask, state.chackTask);
                 }
               }//=> state is RootState ? HorizontalPage() /*RootPage()*/ : ChackPage(),
             ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../database/root_task.dart';
+
 import '../bloc/chack_task_bloc.dart';
 import '../bloc/provider_bloc.dart';
 //import '../bloc/theme_cubit.dart';
@@ -11,13 +13,13 @@ import '../database/chack_task_state.dart';
 
 class ChackPage extends StatelessWidget {
   //String id;
-  final String title;
-  ChackPage(this.title);
+  final RootTask task;
+  ChackPage(this.task);
 
   @override
   Widget build(BuildContext context) {
     //var borderColor = Theme.of(context).accentColor;
-    print("build RootPage");
+    print("build RootPage ${task.text}");
     return BlocBuilder<ChackTaskBloc, ChackTaskState>(builder: (context, state) {
       List<ChackTask> tasks;
       if (state is TaskLoadSuccessState) {
@@ -38,7 +40,7 @@ class ChackPage extends StatelessWidget {
                     .add(RootEvent());
             },
           ),
-          title: Text(title),
+          title: Text(task.text),
         ),
         body: ListView.builder(
             itemCount: tasks == []
@@ -52,7 +54,7 @@ class ChackPage extends StatelessWidget {
                 onLongPress: () {
                   print('longPress on ${tasks[index].text}');
                   /*BlocProvider.of<ProviderBloc>(context)
-                      .add(UpdateEvent(tasks[index]));*/
+                      .add(UpdateEvent(tasks[index].text));*/
                 },
                 onHorizontalDragStart: (DragStartDetails start) {
                   print(start);
@@ -131,7 +133,7 @@ class ChackPage extends StatelessWidget {
             }),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            BlocProvider.of<ProviderBloc>(context).add(DialogEvent(null, null));
+            BlocProvider.of<ProviderBloc>(context).add(DialogEvent(false, task, null));
           },
           label: Text('Task'),
           icon: Icon(Icons.add),

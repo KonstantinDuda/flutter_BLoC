@@ -3,22 +3,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 //import 'package:theme_switch/bloc/provider_bloc.dart';
 import '../bloc/root_task_bloc.dart';
-import '../database/task_state.dart';
-import '../database/task.dart';
+import '../database/root_task_state.dart';
+import '../database/root_task.dart';
 //import '../bloc/counter_bloc.dart';
 import 'root_page.dart';
-//import 'chack_page.dart';
-import 'body.dart';
+import 'chack_page.dart';
+//import 'body.dart';
 //import '../bloc/theme_cubit.dart';
-import 'my_drawer.dart';
+//import 'my_drawer.dart';
 //import 'my_dialog.dart';
 
 class HorizontalPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TaskBloc, TaskState>(builder: (context, state) {
-      List<Task> tasks;
+    return BlocBuilder<TaskBloc, RootTaskState>(builder: (context, state) {
+      List<RootTask> tasks;
       if (state is TaskLoadSuccessState) {
         if (state.tasks == null) {
           tasks = [];
@@ -63,10 +63,12 @@ class HorizontalPage extends StatelessWidget {
 
   _buildVerticalLayout() {
     return RootPage();
+    //return ChackPage();
   }
 
   _buildHorizontalLayout(BuildContext context) {
     return RootPage();
+    //return ChackPage();
     /*return Scaffold(
       appBar: AppBar(title: Text('Horisontal orientation',
         /*style: Theme.of(context).textTheme.headline6,*/),),
