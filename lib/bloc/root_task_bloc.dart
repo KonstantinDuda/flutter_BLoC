@@ -84,14 +84,38 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
 
     RootTask updateTask;
     int updateTaskIndex;
+    int completedTaskCount;
+    int allTaskCount;
     
     for(int i = 0; i < list.length; i++) {
       if(list[i].id == event.id) {
         print("if(list[i].id == event.id)");
         updateTask = list[i];
         updateTaskIndex = i;
+        completedTaskCount = list[i].completedTaskCount;
+        allTaskCount = list[i].allTaskCount;
       }
     }
+
+    if(event.allTaskCount > 0) {
+      updateTask.allTaskCount++;
+      updateTask.completedTaskProcent = _newCompletedTaskProcent(updateTask.allTaskCount, updateTask.completedTaskCount);
+      //print("updateTask.completedTaskProcent event.allTaskCount > 0== ${updateTask.completedTaskProcent}");
+    } else if(event.allTaskCount < 0) {
+      updateTask.allTaskCount--;
+      updateTask.completedTaskProcent = _newCompletedTaskProcent(updateTask.allTaskCount, updateTask.completedTaskCount);
+      //print("updateTask.completedTaskProcent event.allTaskCount < 0== ${updateTask.completedTaskProcent}");
+    }
+    if(event.completedTaskCount > 0) {
+      updateTask.completedTaskCount++;
+      updateTask.completedTaskProcent = _newCompletedTaskProcent(updateTask.allTaskCount, updateTask.completedTaskCount);
+      //print("updateTask.completedTaskProcent event.completedTaskCount > 0== ${updateTask.completedTaskProcent}");
+    } else if(event.completedTaskCount < 0) {
+      updateTask.completedTaskCount--;
+      updateTask.completedTaskProcent = _newCompletedTaskProcent(updateTask.allTaskCount, updateTask.completedTaskCount);
+      //print("updateTask.completedTaskProcent event.completedTaskCount < 0== ${updateTask.completedTaskProcent}");
+    }
+
     if(event.newPosition == 0){
       print("if(event.newPosition == 0)");
       updateTask.text = event.newText;
@@ -205,5 +229,9 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
     yield TaskLoadSuccessState(listNew);
     list = listNew;
     }
+  }
+
+  double _newCompletedTaskProcent(int all, int completed) {
+    return completed * 100 / all / 100;
   }
 }
