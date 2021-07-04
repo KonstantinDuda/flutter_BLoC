@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../database/root_task.dart';
 
+import '../bloc/root_task_bloc.dart';
 import '../bloc/chack_task_bloc.dart';
 import '../bloc/provider_bloc.dart';
 //import '../bloc/theme_cubit.dart';
 
 import '../database/chack_task.dart';
 import '../database/chack_task_event.dart';
+import '../database/root_task_event.dart';
 import '../database/chack_task_state.dart';
 
 class ChackPage extends StatelessWidget {
@@ -50,6 +52,12 @@ class ChackPage extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   print("onTap: ${tasks[index].text}");
+                  if(tasks[index].chack == true){
+                    BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, -1, 0));
+                  } else if(tasks[index].chack == false) {
+                    BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, 1, 0));
+                  }
+                  BlocProvider.of<ChackTaskBloc>(context).add(ChackTaskUpdateEvent(tasks[index].id, 0, tasks[index].text ,true));
                 },
                 onLongPress: () {
                   print('longPress on ${tasks[index].text}');
@@ -124,7 +132,14 @@ class ChackPage extends StatelessWidget {
                       ),
                       Container(
                         margin: EdgeInsets.only(right: 15.0),
-                        child: Text("0 / 0"),
+                        child: Checkbox(
+                          activeColor: Theme.of(context).primaryColor,
+                          checkColor: Theme.of(context).textTheme.headline6.color,
+                          value: tasks[index].chack,
+                          onChanged: (bool value) {
+                            BlocProvider.of<ChackTaskBloc>(context).add(ChackTaskUpdateEvent(tasks[index].id, 0, tasks[index].text ,true));
+                          },
+                        ),
                       ),
                     ],
                   ),
