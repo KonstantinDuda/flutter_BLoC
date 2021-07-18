@@ -10,12 +10,12 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
   List<ChackTask> list = [];
   //final _database = new RootDBProvider();
 
-  ChackTaskBloc({this.list}) : super(TaskLoadInProgressState());
+  ChackTaskBloc({this.list}) : super(ChackTaskLoadInProgressState());
 
   @override 
   Stream<ChackTaskState> mapEventToState(ChackTaskEvent event) async* {
     if(event is ChackTaskLoadSuccessEvent) {
-      yield* _taskLoadedToState();
+      yield* _taskLoadedToState(event);
     } else if(event is ChackTaskAddedEvent) {
       yield* _taskAddedToState(event);
     } else if(event is ChackTaskUpdateEvent) {
@@ -25,16 +25,22 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
     }
   }
 
-  Stream<ChackTaskState> _taskLoadedToState() async* {
+  Stream<ChackTaskState> _taskLoadedToState(ChackTaskLoadSuccessEvent event) async* {
     try {
       //final newList = await _database.getAllTasks();
       final newList = list;
+      /*List<ChackTask> newList = [];
+      for(int i = 0; i < list.length; i++) {
+        if(list[i].rootID == event.rootID) { 
+          newList.add(list[i]);
+        }
+      }*/
       print('_taskLoadedToState(); dbList == $newList');
       
-      yield TaskLoadSuccessState(newList);
+      yield ChackTaskLoadSuccessState(newList);
       list = newList;
     } catch (_) {
-      yield TaskLoadFailureState();
+      yield ChackTaskLoadFailureState();
     }
     //final db = list;
     //print('TaskLoadSuccessEvent to State; db == $db');
@@ -42,7 +48,7 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
   }
 
   Stream<ChackTaskState> _taskAddedToState(ChackTaskAddedEvent event) async* {
-    if(state is TaskLoadSuccessState) {
+    if(state is ChackTaskLoadSuccessState) {
       ChackTask task;
       print('_taskAddedToState; list == $list');
       if(list.isEmpty) {
@@ -73,7 +79,7 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
       for(ChackTask element in newList) {
       print("element = ${element.toMap()}");
     }
-      yield TaskLoadSuccessState(newList);
+      yield ChackTaskLoadSuccessState(newList);
       list = newList;
     }
   }
@@ -90,8 +96,8 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
         updateTaskIndex = i;
       }
     }
-    if(updateTask.chack != event.chackBox) {
-      updateTask.chack = event.chackBox;
+    if(event.chackBox == true) {
+      updateTask.chack == true ? updateTask.chack = false : updateTask.chack = true;
     } else if(event.newPosition == 0){
       print("if(event.newPosition == 0)");
       updateTask.text = event.newText;
@@ -155,13 +161,13 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
     for(ChackTask element in newList) {
       print("element = ${element.toMap()}");
     }
-    yield TaskLoadInProgressState();
-    yield TaskLoadSuccessState(newList);
+    yield ChackTaskLoadInProgressState();
+    yield ChackTaskLoadSuccessState(newList);
     list = newList;
   }
 
   Stream<ChackTaskState> _taskDeleteToState(ChackTaskDeletedEvent event) async* {
-    if(state is TaskLoadSuccessState) {
+    if(state is ChackTaskLoadSuccessState) {
       print("_taskDeleteToState; state is TaskLoadSuccessState");
       /*  Debug version
       final listNew = (state as TaskLoadSuccessState).tasks;
@@ -201,8 +207,9 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
       print("new element == ${element.toMap()}");
     }
 
-    yield TaskLoadInProgressState();
-    yield TaskLoadSuccessState(listNew);
+    // TODO исправить все подобные случаи, возможно созданием конструктора копирования
+    yield ChackTaskLoadInProgressState();
+    yield ChackTaskLoadSuccessState(listNew);
     list = listNew;
     }
   }

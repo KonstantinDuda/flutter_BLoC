@@ -8,17 +8,17 @@ class RootTaskState extends Equatable {
   List<Object> get props => [];
 }
 // Состояние загрузки 
-class TaskLoadInProgressState extends RootTaskState {}
+class RootTaskLoadInProgressState extends RootTaskState {}
 
 // Состояние успешно загруженных данных
-class TaskLoadSuccessState extends RootTaskState {
+class RootTaskLoadSuccessState extends RootTaskState {
   final List<RootTask> tasks;
 
-  TaskLoadSuccessState([this.tasks]);
+  RootTaskLoadSuccessState([this.tasks]);
 
   @override 
   List<Object> get props => [tasks];
 }
 
 // Состояние ошибки при загрузке
-class TaskLoadFailureState extends RootTaskState {}
+class RootTaskLoadFailureState extends RootTaskState {}

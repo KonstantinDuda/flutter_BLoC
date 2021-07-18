@@ -33,12 +33,13 @@ class DialogEvent extends ProviderEvent {
 }
 
 class UpdateEvent extends ProviderEvent {
-  final RootTask task;
+  final RootTask rootTask;
+  final ChackTask chackTask;
 
-  UpdateEvent(this.task);
+  UpdateEvent(this.rootTask, this.chackTask);
 
   @override 
-  List<Object> get props => [task];
+  List<Object> get props => [rootTask, chackTask];
 }
 
 //@immutable 
@@ -70,12 +71,13 @@ class DialogState extends ProviderState {
 }
 
 class UpdateState extends ProviderState {
-  final RootTask task;
+  final RootTask rootTask;
+  final ChackTask chackTask;
 
-  UpdateState(this.task);
+  UpdateState(this.rootTask, this.chackTask);
 
   @override 
-  List<Object> get props => [task];
+  List<Object> get props => [rootTask, chackTask];
 }
 
 class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
@@ -88,7 +90,7 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     } else if(event is DialogEvent) {
       yield DialogState(event.changeObj, event.rootTask, event.chackTask);
     } else if(event is UpdateEvent) {
-      yield UpdateState(event.task);
+      yield UpdateState(event.rootTask, event.chackTask);
     } else if(event is ChackEvent) {
       yield ChackState(event.task);
     }

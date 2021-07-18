@@ -29,11 +29,13 @@ class RootTaskUpdateEvent extends RootTaskEvent {
   final int id;
   final int newPosition;
   final String newText;
+  final int completedTaskCount;
+  final int allTaskCount;
 
-  RootTaskUpdateEvent(this.id, this.newPosition, this.newText);
+  RootTaskUpdateEvent(this.id, this.newPosition, this.newText, this.completedTaskCount, this.allTaskCount);
 
   @override 
-  List<Object> get props => [id, newPosition, newText];
+  List<Object> get props => [id, newPosition, newText, completedTaskCount, allTaskCount];
 }
 
 // События удаления обьекта

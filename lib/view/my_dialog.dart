@@ -125,18 +125,22 @@ class MyDialog extends StatelessWidget {
                   print("Go to the Root Page");
                   if(changeObj == true) {
                       if(chackTask != null && rootTask != null) {
-                        BlocProvider.of<ChackTaskBloc>(context).add(ChackTaskUpdateEvent(chackTask.id, 0, newText, chackTask.chack));
+                        print('if(chackTask != null && rootTask != null)');
+                        BlocProvider.of<ChackTaskBloc>(context).add(ChackTaskUpdateEvent(chackTask.id, 0, newText, false));
                         BlocProvider.of<ProviderBloc>(context).add(ChackEvent(rootTask));
                       } else if(rootTask != null && chackTask == null) {
                         print('if(rootTask != null && chackTask == null)');
-                        BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(rootTask.id, 0, newText));
+                        BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(rootTask.id, 0, newText, 0, 0));
                         BlocProvider.of<ProviderBloc>(context).add(RootEvent());
                       }
                     } else {
                       if(rootTask != null) {
+                        print('if(rootTask != null)');
                         BlocProvider.of<ChackTaskBloc>(context).add(ChackTaskAddedEvent(newText, rootTask.id));
+                        BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(rootTask.id, 0, rootTask.text, 0, 1));
                         BlocProvider.of<ProviderBloc>(context).add(ChackEvent(rootTask));
                       } else {
+                        print('else');
                         BlocProvider.of<TaskBloc>(context).add(RootTaskAddedEvent(newText));
                         BlocProvider.of<ProviderBloc>(context).add(RootEvent());
                       }

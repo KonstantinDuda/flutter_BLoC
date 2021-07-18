@@ -7,7 +7,7 @@ import 'view/horizontal_page.dart';
 import 'view/root_page.dart';
 import 'view/chack_page.dart';
 import 'view/my_dialog.dart';
-import 'view/root_update_page.dart';
+import 'view/update_page.dart';
 
 import 'bloc/root_task_bloc.dart';
 import 'bloc/chack_task_bloc.dart';
@@ -49,7 +49,7 @@ class App extends StatelessWidget {
       // TODO Изменить или переместить
       create: (_) => TaskBloc(list: new List<RootTask>())..add(RootTaskLoadSuccessEvent()),//CounterBloc(), 
       child: BlocProvider(
-        create: (_) => ChackTaskBloc(list: new List<ChackTask>())..add(ChackTaskLoadSuccessEvent()),
+        create: (_) => ChackTaskBloc(list: new List<ChackTask>())..add(ChackTaskLoadSuccessEvent(null)),
         child: BlocProvider(
       // Возвращает ThemeCubit через context
       create: (_) => ThemeCubit(),
@@ -73,7 +73,7 @@ class App extends StatelessWidget {
                   return ChackPage(state.task);
                 } else if(state is UpdateState) {
                   print("Update State");
-                  return RootUpdatePage(state.task);
+                  return UpdatePage(state.rootTask, state.chackTask);
                 } else if(state is DialogState) {
                   print("Dialog State");
                   return MyDialog(state.changeObj, state.rootTask, state.chackTask);

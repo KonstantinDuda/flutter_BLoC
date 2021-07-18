@@ -19,7 +19,7 @@ class HorizontalPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TaskBloc, RootTaskState>(builder: (context, state) {
       List<RootTask> tasks;
-      if (state is TaskLoadSuccessState) {
+      if (state is RootTaskLoadSuccessState) {
         if (state.tasks == null) {
           tasks = [];
         } else

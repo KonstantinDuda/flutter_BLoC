@@ -8,17 +8,17 @@ class ChackTaskState extends Equatable {
   List<Object> get props => [];
 }
 // Состояние загрузки 
-class TaskLoadInProgressState extends ChackTaskState {}
+class ChackTaskLoadInProgressState extends ChackTaskState {}
 
 // Состояние успешно загруженных данных
-class TaskLoadSuccessState extends ChackTaskState {
+class ChackTaskLoadSuccessState extends ChackTaskState {
   final List<ChackTask> tasks;
 
-  TaskLoadSuccessState([this.tasks]);
+  ChackTaskLoadSuccessState([this.tasks]);
 
   @override 
   List<Object> get props => [tasks];
 }
 
 // Состояние ошибки при загрузке
-class TaskLoadFailureState extends ChackTaskState {}
+class ChackTaskLoadFailureState extends ChackTaskState {}

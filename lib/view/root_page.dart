@@ -20,7 +20,7 @@ class RootPage extends StatelessWidget {
     print("build RootPage");
     return BlocBuilder<TaskBloc, RootTaskState>(builder: (context, state) {
       List<RootTask> tasks;
-      if (state is TaskLoadSuccessState) {
+      if (state is RootTaskLoadSuccessState) {
         if (state.tasks == null) {
           tasks = [];
         } else
@@ -47,7 +47,7 @@ class RootPage extends StatelessWidget {
                 onLongPress: () {
                   print('longPress on ${tasks[index].text}');
                   BlocProvider.of<ProviderBloc>(context)
-                      .add(UpdateEvent(tasks[index]));
+                      .add(UpdateEvent(tasks[index], null));
                 },
                 onHorizontalDragStart: (DragStartDetails start) {
                   print(start);
@@ -102,7 +102,7 @@ class RootPage extends StatelessWidget {
                       Expanded(
                         child: Container(
                           //color: Colors.red,
-                          margin: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 5.0),
+                          margin: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 15.0),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -113,14 +113,14 @@ class RootPage extends StatelessWidget {
                               ),
                               LinearPercentIndicator(
                                 alignment: MainAxisAlignment.center,
+                                padding: EdgeInsets.only(top: 5.0),
                                 // Переменную ширины нужно брать из блока
-                                width: MediaQuery.of(context).size.width /
-                                    2, // MediaQuery.of(context).size.width / 2,
+                                width: MediaQuery.of(context).size.width / 2, // MediaQuery.of(context).size.width / 2,
                                 lineHeight: 3.5,
                                 percent: tasks[index].completedTaskProcent,
-                                leading: Text("${tasks[index].completedTaskCount}"),
+                                //leading: Text("0"),
                                 //center: Text("50"),
-                                trailing: Text("${tasks[index].allTaskCount}"), // Задается в обьекте
+                                //trailing: Text("100%"), // Задается в обьекте
                                 progressColor: Theme.of(context).accentColor,
                                 linearStrokeCap: LinearStrokeCap.roundAll,
                               ),
@@ -130,7 +130,7 @@ class RootPage extends StatelessWidget {
                       ),
                       Container(
                         margin: EdgeInsets.only(right: 15.0),
-                        child: Text("0 / 0"),
+                        child: Text("${tasks[index].completedTaskCount} / ${tasks[index].allTaskCount}"),
                       ),
                     ],
                   ),

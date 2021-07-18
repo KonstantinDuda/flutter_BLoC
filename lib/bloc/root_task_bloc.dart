@@ -10,7 +10,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
   List<RootTask> list = [];
   //final _database = new RootDBProvider();
 
-  TaskBloc({this.list}) : super(TaskLoadInProgressState());
+  TaskBloc({this.list}) : super(RootTaskLoadInProgressState());
 
   @override 
   Stream<RootTaskState> mapEventToState(RootTaskEvent event) async* {
@@ -31,10 +31,10 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
       final newList = list;
       print('_taskLoadedToState(); dbList == $newList');
       
-      yield TaskLoadSuccessState(newList);
+      yield RootTaskLoadSuccessState(newList);
       list = newList;
     } catch (_) {
-      yield TaskLoadFailureState();
+      yield RootTaskLoadFailureState();
     }
     //final db = list;
     //print('TaskLoadSuccessEvent to State; db == $db');
@@ -42,7 +42,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
   }
 
   Stream<RootTaskState> _taskAddedToState(RootTaskAddedEvent event) async* {
-    if(state is TaskLoadSuccessState) {
+    if(state is RootTaskLoadSuccessState) {
       RootTask task;
       print('_taskAddedToState; list == $list');
       if(list.isEmpty) {
@@ -75,7 +75,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
       for(RootTask element in newList) {
       print("element = ${element.toMap()}");
     }
-      yield TaskLoadSuccessState(newList);
+      yield RootTaskLoadSuccessState(newList);
       list = newList;
     }
   }
@@ -179,13 +179,13 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
     for(RootTask element in newList) {
       print("element = ${element.toMap()}");
     }
-    yield TaskLoadInProgressState();
-    yield TaskLoadSuccessState(newList);
+    yield RootTaskLoadInProgressState();
+    yield RootTaskLoadSuccessState(newList);
     list = newList;
   }
 
   Stream<RootTaskState> _taskDeleteToState(RootTaskDeletedEvent event) async* {
-    if(state is TaskLoadSuccessState) {
+    if(state is RootTaskLoadSuccessState) {
       print("_taskDeleteToState; state is TaskLoadSuccessState");
       /*  Debug version
       final listNew = (state as TaskLoadSuccessState).tasks;
@@ -225,8 +225,8 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
       print("new element == ${element.toMap()}");
     }
 
-    yield TaskLoadInProgressState();
-    yield TaskLoadSuccessState(listNew);
+    yield RootTaskLoadInProgressState();
+    yield RootTaskLoadSuccessState(listNew);
     list = listNew;
     }
   }

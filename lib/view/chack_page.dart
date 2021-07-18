@@ -23,12 +23,20 @@ class ChackPage extends StatelessWidget {
     //var borderColor = Theme.of(context).accentColor;
     print("build RootPage ${task.text}");
     return BlocBuilder<ChackTaskBloc, ChackTaskState>(builder: (context, state) {
-      List<ChackTask> tasks;
-      if (state is TaskLoadSuccessState) {
+      List<ChackTask> tasks = [];
+      if (state is ChackTaskLoadSuccessState) {
         if (state.tasks == null) {
           tasks = [];
-        } else
-          tasks = state.tasks;
+        } else {
+          List<ChackTask> allTasks;
+          allTasks = state.tasks;
+          for(ChackTask localTask in allTasks) {
+            if(localTask.rootID == task.id) {
+              tasks.add(localTask);
+            }
+          }
+           
+          }
       } else {
         tasks = [];
       }
@@ -61,8 +69,8 @@ class ChackPage extends StatelessWidget {
                 },
                 onLongPress: () {
                   print('longPress on ${tasks[index].text}');
-                  /*BlocProvider.of<ProviderBloc>(context)
-                      .add(UpdateEvent(tasks[index].text));*/
+                  BlocProvider.of<ProviderBloc>(context)
+                      .add(UpdateEvent(task, tasks[index]));
                 },
                 onHorizontalDragStart: (DragStartDetails start) {
                   print(start);

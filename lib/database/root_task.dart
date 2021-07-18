@@ -2,8 +2,8 @@ class RootTask {
   int id;
   int position;
   String text;
-  int allTaskCount;
   int completedTaskCount;
+  int allTaskCount;
   double completedTaskProcent;
   //double widthContainer;
   //double heightContainer;
