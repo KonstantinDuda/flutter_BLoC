@@ -27,7 +27,7 @@ class ThemeCubit extends Cubit<ThemeData> {
     ),
     brightness: Brightness.light,
     primaryColor: Colors.blue,
-    //primaryColorDark: Colors.black,
+    primaryColorDark: Colors.orange,
     accentColor: Colors.blue,
   );
 
@@ -53,7 +53,7 @@ class ThemeCubit extends Cubit<ThemeData> {
     ),
     brightness: Brightness.dark,
     primaryColor: Colors.orange,
-    //primaryColorDark: Colors.white,
+    primaryColorDark: Colors.blue,
     accentColor: Colors.orange,
   );
 
