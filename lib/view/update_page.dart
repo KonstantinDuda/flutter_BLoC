@@ -28,82 +28,10 @@ class UpdatePage extends StatelessWidget {
     else {
       return chackTaskIsNotNull(rootTask, chackTask);
     }
-    /*return BlocBuilder<TaskBloc, RootTaskState>(builder: (context, state) {
-      List<RootTask> tasks;
-      if (state is TaskLoadSuccessState) {
-        //print('tasks = state.tasks');
+  }
 
-        if (state.tasks == null) {
-          tasks = [];
-          //print('tasks == null; now $tasks');
-        } else
-          tasks = state.tasks;
-      } else {
-        //print('tasks = [] because state is not a TaskLoadSuccessState');
-        tasks = [];
-      }
-      //print('tasks == $tasks');
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Update ${rootTask.text}'),
-        ),
-        body: ListView.builder(
-            itemCount:
-                tasks.length, //.db.getAllTask().length,//MyDB.db.myDB.length,
-            itemBuilder: (context, index) {
-              print("${tasks[index].toMap()} == ${rootTask.toMap()}  ?");
-              //print("ListView.builder");
-              return GestureDetector(
-                onTap: () {
-                  print(tasks[index].id);
-                  print(tasks[index].text);
-                  BlocProvider.of<ProviderBloc>(context).add(UpdateEvent(tasks[index]));
-                },
-                onLongPress: () {
-                  print("Long press on ${tasks[index].id}");
-                  //setState(() { borderColor = Colors.orange; });
-                },
-                child: Container(
-                  //height: MyDB.db.myDB[index].heightContainer,    //62, // Не должно быть константным // Задается в обьекте
-                  //width: 500,
-                  margin: EdgeInsets.fromLTRB(20.0, 5.0, 10.0, 5.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: tasks[index].id == rootTask.id
-                          ? Colors.orange
-                          : Colors.blue,
-                      width: 1.5,
-                    ),
-                    borderRadius: BorderRadius.circular(30.0),
-                    color: Colors.white,
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Center(
-                                child: Text (
-                                  " ${tasks[index].text}",
-                                  style: tasks[index].id == rootTask.id
-                                      ? TextStyle(fontWeight: FontWeight.bold)
-                                      : TextStyle(
-                                          fontWeight: FontWeight.normal),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
-        floatingActionButton: Container(
+  myFloatingActionButton(BuildContext context, bool chackTaskIsNull) {
+    return Container(
           // При перемещении на телефоне активный обьект перерисовывается в синий цвет...
           child: Column(  //Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -113,10 +41,15 @@ class UpdatePage extends StatelessWidget {
                 margin: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
                 child: FloatingActionButton(
                   onPressed: () {
-                    BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                    if(chackTaskIsNull == true){
+                      BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                    } else {
+                      BlocProvider.of<ProviderBloc>(context).add(ChackEvent(rootTask));
+                    }
+                    
                   },
                   child: Icon(Icons.check_outlined),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
               ),
               Container(
@@ -124,46 +57,56 @@ class UpdatePage extends StatelessWidget {
                 child: FloatingActionButton(
                   onPressed: () {
                     print('press Up');
-                    //BlocProvider.of<TaskBloc>(context).add(TaskEvent(Events.updateTask, oldId: updateIndex, newId: updateIndex -1));
-                    BlocProvider.of<TaskBloc>(context)
+                    if(chackTaskIsNull == true){
+                      BlocProvider.of<TaskBloc>(context)
                         .add(RootTaskUpdateEvent(rootTask.id, -1, rootTask.text, 0, 0));
-                    //BlocProvider.of<ProviderBloc>(context).add(UpdateEvent(updateTask));
+                    } else {
+                      BlocProvider.of<ChackTaskBloc>(context)
+                        .add(ChackTaskUpdateEvent(chackTask.id, -1, chackTask.text, false));
+                    }
+                    
                   },
                   child: Icon(Icons.arrow_upward),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
               ),
               Container(
                 margin: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
                 child: FloatingActionButton(
                   onPressed: () {
-                    //BlocProvider.of<ProviderBloc>(context).add(ProviderEvent.dialog);
-                    //BlocProvider.of<TaskBloc>(context).add(TaskEvent(Events.updateTask, oldId: updateIndex, newId: updateIndex +1));
-                    //newId(1);
                     print('press Bottom');
-                    BlocProvider.of<TaskBloc>(context)
+                    if(chackTaskIsNull == true){
+                      BlocProvider.of<TaskBloc>(context)
                         .add(RootTaskUpdateEvent(rootTask.id, 1, rootTask.text, 0 ,0));
+                    } else {
+                      BlocProvider.of<ChackTaskBloc>(context)
+                        .add(ChackTaskUpdateEvent(chackTask.id, 1, chackTask.text, false));
+                    }
+                    
                   },
                   child: Icon(Icons.arrow_downward),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
               ),
               Container(
                 margin: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
                 child: FloatingActionButton.extended(
                   onPressed: () {
-                    BlocProvider.of<ProviderBloc>(context).add(DialogEvent(true, rootTask, null));
+                    if(chackTaskIsNull == true){
+                      BlocProvider.of<ProviderBloc>(context).add(DialogEvent(true, rootTask, null));
+                    } else {
+                      BlocProvider.of<ProviderBloc>(context).add(DialogEvent(true, rootTask, chackTask));
+                    }
+                    
                   },
                   label: Text('Rewrite'),
                   icon: Icon(Icons.create),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
               ),
             ],
           ),
-        ),
-      );
-    });*/
+        );
   }
 
   chackTaskIsNull(RootTask rootTask) {
@@ -210,12 +153,12 @@ class UpdatePage extends StatelessWidget {
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: tasks[index].id == rootTask.id
-                          ? Colors.orange
-                          : Colors.blue,
+                          ? Theme.of(context).primaryColorDark
+                          : Theme.of(context).primaryColor,
                       width: 1.5,
                     ),
                     borderRadius: BorderRadius.circular(30.0),
-                    color: Colors.white,
+                    color: Theme.of(context).textTheme.headline6.color,
                   ),
                   child: Row(
                     children: <Widget>[
@@ -243,7 +186,7 @@ class UpdatePage extends StatelessWidget {
                 ),
               );
             }),
-        floatingActionButton: Container(
+        floatingActionButton: myFloatingActionButton(context, true), /*Container(
           // При перемещении на телефоне активный обьект перерисовывается в синий цвет...
           child: Column(  //Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -256,7 +199,7 @@ class UpdatePage extends StatelessWidget {
                     BlocProvider.of<ProviderBloc>(context).add(RootEvent());
                   },
                   child: Icon(Icons.check_outlined),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
               ),
               Container(
@@ -270,7 +213,7 @@ class UpdatePage extends StatelessWidget {
                     //BlocProvider.of<ProviderBloc>(context).add(UpdateEvent(updateTask));
                   },
                   child: Icon(Icons.arrow_upward),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
               ),
               Container(
@@ -285,7 +228,7 @@ class UpdatePage extends StatelessWidget {
                         .add(RootTaskUpdateEvent(rootTask.id, 1, rootTask.text, 0 ,0));
                   },
                   child: Icon(Icons.arrow_downward),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
               ),
               Container(
@@ -296,12 +239,12 @@ class UpdatePage extends StatelessWidget {
                   },
                   label: Text('Rewrite'),
                   icon: Icon(Icons.create),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
               ),
             ],
           ),
-        ),
+        ),*/
       );
     });
   }
@@ -383,7 +326,7 @@ class UpdatePage extends StatelessWidget {
                 ),
               );
             }),
-        floatingActionButton: Container(
+        floatingActionButton: myFloatingActionButton(context, true), /*Container(
           // При перемещении на телефоне активный обьект перерисовывается в синий цвет...
           child: Column(  //Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -396,7 +339,7 @@ class UpdatePage extends StatelessWidget {
                     BlocProvider.of<ProviderBloc>(context).add(ChackEvent(rootTask));
                   },
                   child: Icon(Icons.check_outlined),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
               ),
               Container(
@@ -410,7 +353,7 @@ class UpdatePage extends StatelessWidget {
                     //BlocProvider.of<ProviderBloc>(context).add(UpdateEvent(updateTask));
                   },
                   child: Icon(Icons.arrow_upward),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
               ),
               Container(
@@ -425,7 +368,7 @@ class UpdatePage extends StatelessWidget {
                         .add(ChackTaskUpdateEvent(chackTask.id, 1, chackTask.text, false));
                   },
                   child: Icon(Icons.arrow_downward),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
               ),
               Container(
@@ -436,12 +379,12 @@ class UpdatePage extends StatelessWidget {
                   },
                   label: Text('Rewrite'),
                   icon: Icon(Icons.create),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
               ),
             ],
           ),
-        ),
+        ),*/
       );
     });
   }

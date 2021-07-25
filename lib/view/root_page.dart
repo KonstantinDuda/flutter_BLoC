@@ -4,7 +4,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 
 import '../bloc/root_task_bloc.dart';
 import '../bloc/provider_bloc.dart';
-//import '../bloc/theme_cubit.dart';
+import '../bloc/theme_cubit.dart';
 
 import '../database/root_task.dart';
 import '../database/root_task_event.dart';
@@ -32,6 +32,13 @@ class RootPage extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           title: Text(title),
+          leading: IconButton(
+            icon: Icon(Icons.brightness_4),
+            onPressed: () {
+              BlocProvider.of<ThemeCubit>(context).toggleTheme();
+              print('Change theme');
+            },
+          ),
         ),
         body: ListView.builder(
             itemCount: tasks == []
