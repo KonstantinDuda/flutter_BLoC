@@ -8,7 +8,7 @@ import '../database/root_task_state.dart';
 class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
   
   List<RootTask> list = [];
-  //final _database = new RootDBProvider();
+  final _database = new RootDBProvider();
 
   TaskBloc({this.list}) : super(RootTaskLoadInProgressState());
 
@@ -27,13 +27,14 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
 
   Stream<RootTaskState> _taskLoadedToState() async* {
     try {
-      //final newList = await _database.getAllTasks();
-      final newList = list;
+      final newList = await _database.getAllTasks();
+      //final newList = list;
       print('_taskLoadedToState(); dbList == $newList');
       
       yield RootTaskLoadSuccessState(newList);
       list = newList;
     } catch (_) {
+      print('Fail Root _taskLoadedToState(); dbList');
       yield RootTaskLoadFailureState();
     }
     //final db = list;
@@ -66,11 +67,11 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
           completedTaskProcent: 0.0,
         );
       }
-      //await _database.newTask(task);
-      //final newList = await _database.getAllTasks();
-      final newList = list;
+      await _database.newTask(task);
+      final newList = await _database.getAllTasks();
+      //final newList = list;
       
-      newList.add(task);
+      //newList.add(task);
       newList.sort((a,b) => a.position.compareTo(b.position));
       for(RootTask element in newList) {
       print("element = ${element.toMap()}");
@@ -96,23 +97,34 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
         allTaskCount = list[i].allTaskCount;
       }
     }
+    print("allTaskCount == $allTaskCount");
 
     if(event.allTaskCount > 0) {
       updateTask.allTaskCount++;
       updateTask.completedTaskProcent = _newCompletedTaskProcent(updateTask.allTaskCount, updateTask.completedTaskCount);
+      _database.updateTask(updateTask);
       //print("updateTask.completedTaskProcent event.allTaskCount > 0== ${updateTask.completedTaskProcent}");
     } else if(event.allTaskCount < 0) {
       updateTask.allTaskCount--;
+      var list = await _database.getGroupTasksChack(updateTask.id);
+      var completedTaskCount = 0;
+      for(var i in list) {
+        if (i.chack > 0) completedTaskCount++;
+      }
+      updateTask.completedTaskCount = completedTaskCount;
       updateTask.completedTaskProcent = _newCompletedTaskProcent(updateTask.allTaskCount, updateTask.completedTaskCount);
+      _database.updateTask(updateTask);
       //print("updateTask.completedTaskProcent event.allTaskCount < 0== ${updateTask.completedTaskProcent}");
     }
     if(event.completedTaskCount > 0) {
       updateTask.completedTaskCount++;
       updateTask.completedTaskProcent = _newCompletedTaskProcent(updateTask.allTaskCount, updateTask.completedTaskCount);
+      _database.updateTask(updateTask);
       //print("updateTask.completedTaskProcent event.completedTaskCount > 0== ${updateTask.completedTaskProcent}");
     } else if(event.completedTaskCount < 0) {
       updateTask.completedTaskCount--;
       updateTask.completedTaskProcent = _newCompletedTaskProcent(updateTask.allTaskCount, updateTask.completedTaskCount);
+      _database.updateTask(updateTask);
       //print("updateTask.completedTaskProcent event.completedTaskCount < 0== ${updateTask.completedTaskProcent}");
     }
 
@@ -127,7 +139,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
           if(list[i].position > updateTask.position) {
             list[i].position -= 1;
             final task = list[i];
-            //_database.updateTask(task);
+            _database.updateTask(task);
           }
         }
         updateTask.position = list.length;
@@ -139,7 +151,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
             print("if(list[i].position > updateTask.position && list[i].position < (updateTask.position + event.newPosition))");
             list[i].position -= 1;
             final task = list[i];
-            //_database.updateTask(task);
+            _database.updateTask(task);
           }
         }
       updateTask.position += event.newPosition;
@@ -152,7 +164,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
           if(list[i].position < updateTask.position) {
             list[i].position += 1;
             final task = list[i];
-            //_database.updateTask(task);
+            _database.updateTask(task);
           }
         }
         updateTask.position = 1;
@@ -163,7 +175,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
             print("if(list[i].position < updateTask.position && list[i].position > (updateTask.position + event.newPosition))");
             list[i].position += 1;
             final task = list[i];
-            //_database.updateTask(task);
+            _database.updateTask(task);
           }
       }
       updateTask.position += event.newPosition;
@@ -171,9 +183,9 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
     }
     //list[updateTaskIndex] = updateTask;
 
-    //await _database.updateTask(updateTask);
-    //final newList = await _database.getAllTasks();
-    final newList = list;
+    await _database.updateTask(updateTask);
+    final newList = await _database.getAllTasks();
+    //final newList = list;
 
     newList.sort((a,b) => a.position.compareTo(b.position));
     for(RootTask element in newList) {
@@ -205,19 +217,21 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
         //updateTaskIndex = i;
       }
     }
-    for(int i = 0; i < list.length; i++){
+    /*for(int i = 0; i < list.length; i++){
       if(list[i].position > updateTask.position) {
         final newTask = list[i];
         newTask.position -= 1;
         //print("${newTask.toMap()}");
         //await _database.updateTask(newTask);
       }
-    }
+    }*/
 
     // Mobile version
-    //await _database.deleteTask(event.id);
-    //final listNew = await _database.getAllTasks();
-    final listNew = list;
+    await _database.deleteTask(event.id);
+    final listNew = await _database.getAllTasks();
+    if(updateTask.allTaskCount > 0)
+      await _database.deleteGroupTasksChack(event.id);
+    //final listNew = list;
 
     // It Mobile and Debug version
     listNew.sort((a,b) => a.position.compareTo(b.position));
@@ -232,6 +246,9 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
   }
 
   double _newCompletedTaskProcent(int all, int completed) {
+    if(all == 0)
+      return 0.0;
+
     return completed * 100 / all / 100;
   }
 }

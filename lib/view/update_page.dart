@@ -93,8 +93,10 @@ class UpdatePage extends StatelessWidget {
                 child: FloatingActionButton.extended(
                   onPressed: () {
                     if(chackTaskIsNull == true){
+                      print('root rewrite');
                       BlocProvider.of<ProviderBloc>(context).add(DialogEvent(true, rootTask, null));
                     } else {
+                      print('chack rewrite');
                       BlocProvider.of<ProviderBloc>(context).add(DialogEvent(true, rootTask, chackTask));
                     }
                     

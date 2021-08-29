@@ -20,21 +20,56 @@ import 'database/root_task.dart';
 import 'database/chack_task.dart';
 import 'database/root_task_event.dart';
 import 'database/chack_task_event.dart';
+import 'database/theme_state_file.dart';
+
 
 void main() {
   // Обьявляем, что нужно использовать наш Делегат (Observer)
   Bloc.observer = SimpleBlocObserver();
-  runApp(
+  
+  void fn() async {
+    int t = await ThemeStateFile().readState();
+    runApp(
     BlocProvider(
       create: (context) => ProviderBloc(),
-      child: App(),
+      child: App(t),
     ),
     );
+  }
+
+  fn();
+  //ThemeStateFile();
+  
 }
 
 // Создаем класс - виджет
 class App extends StatelessWidget {
+  final t;
+  App(this.t);
+  //int _state = 0;
+  //int _state;
+  /*void fn(BuildContext context) async {
+    print('fn');
+      await ThemeStateFile().readState().then((value) {
+        print('value == $value');
+        if(value > 0) {
+          print('value > 0; value == $value');
+          BlocProvider.of<ThemeCubit>(context).toggleTheme();
+          //ThemeStateFile().writeState(1);
+          }
+        return value;
+      });
+      //print('th == $_state');
+    }*/
   
+  /*Future<ThemeCubit> _calculateThemeCubit() async {
+    _state = await ThemeStateFile().readState();
+    if(_state == 0)
+      return ThemeCubit();
+    else
+      return ThemeCubit()..toggleTheme();
+  }*/
+
   @override
   Widget build(BuildContext context) {
     // Поставщик предоставляет блок своим дочерним елементам
@@ -46,13 +81,19 @@ class App extends StatelessWidget {
     // Может использоваться для предоставления существующего 
     // блока новой части дерева виджетов
     return BlocProvider(
-      // TODO Изменить или переместить
       create: (_) => TaskBloc(list: new List<RootTask>())..add(RootTaskLoadSuccessEvent()),//CounterBloc(), 
       child: BlocProvider(
         create: (_) => ChackTaskBloc(list: new List<ChackTask>())..add(ChackTaskLoadSuccessEvent(null)),
         child: BlocProvider(
       // Возвращает ThemeCubit через context
-      create: (_) => ThemeCubit(),
+      create: (_) {
+
+        //fn(context);
+        if(t == 0)
+          return ThemeCubit();
+        else 
+          return ThemeCubit()..toggleTheme();
+        },
       // Блок строитель обрабатывает создание виджета в 
       // ответ на новое состояние. (потенциально) Функция строитель может 
       // вызываться несколько раз.

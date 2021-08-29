@@ -8,7 +8,7 @@ import '../database/chack_task_state.dart';
 class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
   
   List<ChackTask> list = [];
-  //final _database = new RootDBProvider();
+  final _database = new RootDBProvider();
 
   ChackTaskBloc({this.list}) : super(ChackTaskLoadInProgressState());
 
@@ -27,19 +27,23 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
 
   Stream<ChackTaskState> _taskLoadedToState(ChackTaskLoadSuccessEvent event) async* {
     try {
-      //final newList = await _database.getAllTasks();
-      final newList = list;
+      print('event.rootID == ${event.rootID}');
+      final newList = await _database.getGroupTasksChack(event.rootID);
+      //final newList = list;
       /*List<ChackTask> newList = [];
       for(int i = 0; i < list.length; i++) {
         if(list[i].rootID == event.rootID) { 
           newList.add(list[i]);
         }
       }*/
-      print('_taskLoadedToState(); dbList == $newList');
+      for(var a in newList) {
+        print('_taskLoadedToState(); a == ${a.toMap()}');
+      }
       
       yield ChackTaskLoadSuccessState(newList);
       list = newList;
     } catch (_) {
+      print('Fail _taskLoadedToState(); dbList');
       yield ChackTaskLoadFailureState();
     }
     //final db = list;
@@ -51,6 +55,12 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
     if(state is ChackTaskLoadSuccessState) {
       ChackTask task;
       print('_taskAddedToState; list == $list');
+      var newPosition = 1;
+      for(var i in list) {
+        if(i.rootID == event.rootId) {
+          newPosition++;
+        }
+      }
       if(list.isEmpty) {
         print('list.isEmpty');
         task = new ChackTask(
@@ -58,23 +68,23 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
           position: 1,
           text: event.text,
           rootID: event.rootId,
-          chack: false,
+          chack: 0,
         );
       } else if(list.length > 0) {
           print('list.length > 0');
           task = new ChackTask(
           id: list[list.length -1].id +1,
-          position: list.last.position +(1),
+          position: newPosition,
           text: event.text,
           rootID: event.rootId,
-          chack: false,
+          chack: 0,
         );
       }
-      //await _database.newTask(task);
-      //final newList = await _database.getAllTasks();
-      final newList = list;
+      await _database.newTaskChack(task);
+      final newList = await _database.getGroupTasksChack(event.rootId);
+      //final newList = list;
       
-      newList.add(task);
+      //newList.add(task);
       newList.sort((a,b) => a.position.compareTo(b.position));
       for(ChackTask element in newList) {
       print("element = ${element.toMap()}");
@@ -97,8 +107,10 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
       }
     }
     if(event.chackBox == true) {
-      updateTask.chack == true ? updateTask.chack = false : updateTask.chack = true;
-    } else if(event.newPosition == 0){
+      updateTask.chack == 1 ? updateTask.chack = 0 : updateTask.chack = 1;
+      _database.updateTaskChack(updateTask);
+    }
+    if(event.newPosition == 0){
       print("if(event.newPosition == 0)");
       updateTask.text = event.newText;
     } else if(event.newPosition > 0) {
@@ -109,7 +121,7 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
           if(list[i].position > updateTask.position) {
             list[i].position -= 1;
             final task = list[i];
-            //_database.updateTask(task);
+            _database.updateTaskChack(task);
           }
         }
         updateTask.position = list.length;
@@ -121,7 +133,7 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
             print("if(list[i].position > updateTask.position && list[i].position < (updateTask.position + event.newPosition))");
             list[i].position -= 1;
             final task = list[i];
-            //_database.updateTask(task);
+            _database.updateTaskChack(task);
           }
         }
       updateTask.position += event.newPosition;
@@ -134,7 +146,7 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
           if(list[i].position < updateTask.position) {
             list[i].position += 1;
             final task = list[i];
-            //_database.updateTask(task);
+            _database.updateTaskChack(task);
           }
         }
         updateTask.position = 1;
@@ -145,7 +157,7 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
             print("if(list[i].position < updateTask.position && list[i].position > (updateTask.position + event.newPosition))");
             list[i].position += 1;
             final task = list[i];
-            //_database.updateTask(task);
+            _database.updateTaskChack(task);
           }
       }
       updateTask.position += event.newPosition;
@@ -153,9 +165,9 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
     }
     //list[updateTaskIndex] = updateTask;
 
-    //await _database.updateTask(updateTask);
-    //final newList = await _database.getAllTasks();
-    final newList = list;
+    await _database.updateTaskChack(updateTask);
+    final newList = await _database.getGroupTasksChack(updateTask.rootID);
+    //final newList = list;
 
     newList.sort((a,b) => a.position.compareTo(b.position));
     for(ChackTask element in newList) {
@@ -187,19 +199,19 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
         //updateTaskIndex = i;
       }
     }
-    for(int i = 0; i < list.length; i++){
+    /*for(int i = 0; i < list.length; i++){
       if(list[i].position > updateTask.position) {
         final newTask = list[i];
         newTask.position -= 1;
         //print("${newTask.toMap()}");
         //await _database.updateTask(newTask);
       }
-    }
+    }*/
 
     // Mobile version
-    //await _database.deleteTask(event.id);
-    //final listNew = await _database.getAllTasks();
-    final listNew = list;
+    await _database.deleteTaskChack(event.id);
+    final listNew = await _database.getGroupTasksChack(updateTask.rootID);
+    //final listNew = list;
 
     // It Mobile and Debug version
     listNew.sort((a,b) => a.position.compareTo(b.position));

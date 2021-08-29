@@ -21,21 +21,24 @@ class ChackPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //var borderColor = Theme.of(context).accentColor;
-    print("build RootPage ${task.text}");
+    //ChackTaskBloc().add(ChackTaskLoadSuccessEvent(task.id));
+    print("build ChackPage on ${task.text}");
     return BlocBuilder<ChackTaskBloc, ChackTaskState>(builder: (context, state) {
-      List<ChackTask> tasks = [];
+      /*BlocProvider.of<ChackTaskBloc>(context)
+                    .add(ChackTaskLoadSuccessEvent(task.id));*/
+      List<ChackTask> tasks;
       if (state is ChackTaskLoadSuccessState) {
         if (state.tasks == null) {
           tasks = [];
         } else {
-          List<ChackTask> allTasks;
-          allTasks = state.tasks;
-          for(ChackTask localTask in allTasks) {
-            if(localTask.rootID == task.id) {
-              tasks.add(localTask);
-            }
-          }
-           
+          tasks = state.tasks;
+          //List<ChackTask> allTasks;
+          //allTasks = state.tasks;
+          //for(ChackTask localTask in allTasks) {
+          //  if(localTask.rootID == task.id) {
+          //    tasks.add(localTask);
+          //  }
+          //}
           }
       } else {
         tasks = [];
@@ -60,9 +63,9 @@ class ChackPage extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   print("onTap: ${tasks[index].text}");
-                  if(tasks[index].chack == true){
+                  if(tasks[index].chack == 1){
                     BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, -1, 0));
-                  } else if(tasks[index].chack == false) {
+                  } else if(tasks[index].chack == 0) {
                     BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, 1, 0));
                   }
                   BlocProvider.of<ChackTaskBloc>(context).add(ChackTaskUpdateEvent(tasks[index].id, 0, tasks[index].text ,true));
@@ -103,6 +106,8 @@ class ChackPage extends StatelessWidget {
                                   .add(ChackTaskDeletedEvent(tasks[index].id));
                               ScaffoldMessenger.of(context)
                                   .removeCurrentSnackBar();
+                              BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, 0, -1));
+                  
                             },
                           ),
                         ],
@@ -143,8 +148,13 @@ class ChackPage extends StatelessWidget {
                         child: Checkbox(
                           activeColor: Theme.of(context).primaryColor,
                           checkColor: Theme.of(context).textTheme.headline6.color,
-                          value: tasks[index].chack,
+                          value: tasks[index].chack == 1 ? true : false,
                           onChanged: (bool value) {
+                            if(tasks[index].chack == 1){
+                              BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, -1, 0));
+                            } else if(tasks[index].chack == 0) {
+                              BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, 1, 0));
+                            }
                             BlocProvider.of<ChackTaskBloc>(context).add(ChackTaskUpdateEvent(tasks[index].id, 0, tasks[index].text ,true));
                           },
                         ),

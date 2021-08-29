@@ -3,7 +3,7 @@ class ChackTask {
   int position;
   String text;
   int rootID;
-  bool chack;
+  int chack;
   /*int allTaskCount;
   int completedTaskCount;
   double completedTaskProcent;*/
@@ -14,7 +14,7 @@ class ChackTask {
     id: json["id"],
     position: json["position"],
     text: json["text"],
-    rootID: json["RootID"],
+    rootID: json["rootID"],
     chack: json["chack"],
   );
 

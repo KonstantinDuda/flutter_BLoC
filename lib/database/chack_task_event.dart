@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:task_sheduler/database/chack_task_state.dart';
+//import 'package:task_sheduler/database/chack_task_state.dart';
 //import 'task.dart';
 
 // События
@@ -13,6 +13,7 @@ class ChackTaskEvent extends Equatable {
 // Событие удачной загрузки 
 class ChackTaskLoadSuccessEvent extends ChackTaskEvent {
   final int rootID;
+  
 
   ChackTaskLoadSuccessEvent(this.rootID);
 
