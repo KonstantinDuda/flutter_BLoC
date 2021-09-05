@@ -42,6 +42,9 @@ class RootPage extends StatelessWidget {
       print('tasks == $tasks');
       return Scaffold(
         appBar: AppBar(
+          //shadowColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).accentColor,
+          foregroundColor: Theme.of(context).textTheme.headline6.color,
           title: Text(title),
           leading: IconButton(
             icon: Icon(Icons.brightness_4),

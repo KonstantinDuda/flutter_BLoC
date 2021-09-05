@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:task_sheduler/bloc/chack_task_bloc.dart';
+//import 'package:task_sheduler/bloc/chack_task_bloc.dart';
 
 
-import 'view/horizontal_page.dart';
+//import 'view/horizontal_page.dart';
 import 'view/root_page.dart';
 import 'view/chack_page.dart';
 import 'view/my_dialog.dart';

@@ -31,6 +31,11 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
       //final newList = list;
       print('_taskLoadedToState(); dbList == $newList');
       
+      newList.sort((a,b) => a.position.compareTo(b.position));
+      for(RootTask element in newList) {
+        print("element = ${element.toMap()}");
+      }
+
       yield RootTaskLoadSuccessState(newList);
       list = newList;
     } catch (_) {

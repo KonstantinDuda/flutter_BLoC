@@ -46,6 +46,8 @@ class ChackPage extends StatelessWidget {
       print('tasks == $tasks');
       return Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).accentColor,
+          foregroundColor: Theme.of(context).textTheme.headline6.color,
           leading: IconButton(
             icon: Icon(Icons.arrow_back), 
             onPressed: () {

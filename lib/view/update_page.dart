@@ -48,7 +48,7 @@ class UpdatePage extends StatelessWidget {
                     }
                     
                   },
-                  child: Icon(Icons.check_outlined),
+                  child: Icon(Icons.check),
                   backgroundColor: Theme.of(context).accentColor,
                 ),
               ),
@@ -130,10 +130,12 @@ class UpdatePage extends StatelessWidget {
       //print('tasks == $tasks');
       return Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).accentColor,
+          foregroundColor: Theme.of(context).textTheme.headline6.color,
           title: Text('Update ${rootTask.text}'),
         ),
         body: ListView.builder(
-            itemCount:
+            itemCount: tasks == [] ? 0 :
                 tasks.length, //.db.getAllTask().length,//MyDB.db.myDB.length,
             itemBuilder: (context, index) {
               print("${tasks[index].toMap()} == ${rootTask.toMap()}  ?");
@@ -273,7 +275,7 @@ class UpdatePage extends StatelessWidget {
           title: Text('Update ${chackTask.text}'),
         ),
         body: ListView.builder(
-            itemCount:
+            itemCount: tasks == [] ? 0 :
                 tasks.length, //.db.getAllTask().length,//MyDB.db.myDB.length,
             itemBuilder: (context, index) {
               print("${tasks[index].toMap()} == ${chackTask.toMap()}  ?");
@@ -300,7 +302,7 @@ class UpdatePage extends StatelessWidget {
                       width: 1.5,
                     ),
                     borderRadius: BorderRadius.circular(30.0),
-                    color: Colors.white,
+                    color: Theme.of(context).textTheme.headline6.color, //Colors.white,
                   ),
                   child: Row(
                     children: <Widget>[
@@ -328,7 +330,7 @@ class UpdatePage extends StatelessWidget {
                 ),
               );
             }),
-        floatingActionButton: myFloatingActionButton(context, true), /*Container(
+        floatingActionButton: myFloatingActionButton(context, false), /*Container(
           // При перемещении на телефоне активный обьект перерисовывается в синий цвет...
           child: Column(  //Row(
             mainAxisAlignment: MainAxisAlignment.end,

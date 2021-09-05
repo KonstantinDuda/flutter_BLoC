@@ -35,11 +35,14 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
         if(list[i].rootID == event.rootID) { 
           newList.add(list[i]);
         }
-      }*/
+      }
       for(var a in newList) {
         print('_taskLoadedToState(); a == ${a.toMap()}');
+      }*/
+      newList.sort((a,b) => a.position.compareTo(b.position));
+      for(ChackTask element in newList) {
+        print("element = ${element.toMap()}");
       }
-      
       yield ChackTaskLoadSuccessState(newList);
       list = newList;
     } catch (_) {
