@@ -23,7 +23,11 @@ class ChackPage extends StatelessWidget {
     //var borderColor = Theme.of(context).accentColor;
     //ChackTaskBloc().add(ChackTaskLoadSuccessEvent(task.id));
     print("build ChackPage on ${task.text}");
-    return BlocBuilder<ChackTaskBloc, ChackTaskState>(builder: (context, state) {
+    return WillPopScope(
+      onWillPop: () async { BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+      return false; },
+      child:
+    BlocBuilder<ChackTaskBloc, ChackTaskState>(builder: (context, state) {
       /*BlocProvider.of<ChackTaskBloc>(context)
                     .add(ChackTaskLoadSuccessEvent(task.id));*/
       List<ChackTask> tasks;
@@ -175,6 +179,6 @@ class ChackPage extends StatelessWidget {
           backgroundColor: Theme.of(context).accentColor,
         ),
       );
-    });
+    }));
   }
 }

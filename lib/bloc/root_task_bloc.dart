@@ -212,13 +212,13 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
         print("listNew[i].id == event.id");
       }
     }*/
-    RootTask updateTask;
+    RootTask deleteTask;
     //int updateTaskIndex;
     
     for(int i = 0; i < list.length; i++) {
       if(list[i].id == event.id) {
         print("if(list[i].id == event.id)");
-        updateTask = list[i];
+        deleteTask = list[i];
         //updateTaskIndex = i;
       }
     }
@@ -232,10 +232,11 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
     }*/
 
     // Mobile version
+    if(deleteTask.allTaskCount > 0)
+      await _database.deleteGroupTasksChack(event.id);
     await _database.deleteTask(event.id);
     final listNew = await _database.getAllTasks();
-    if(updateTask.allTaskCount > 0)
-      await _database.deleteGroupTasksChack(event.id);
+    
     //final listNew = list;
 
     // It Mobile and Debug version

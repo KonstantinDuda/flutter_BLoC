@@ -22,98 +22,182 @@ class UpdatePage extends StatelessWidget {
   Widget build(BuildContext context) {
     print("build update page");
     print("Update Task == ${rootTask.toMap()}");
-    if(chackTask == null) {
+    return WillPopScope(
+      onWillPop: () async { BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+      return false; },
+      child: chackTask == null ? chackTaskIsNull(rootTask) : chackTaskIsNotNull(rootTask, chackTask)
+      );
+    /*if (chackTask == null) {
       return chackTaskIsNull(rootTask);
-    }
-    else {
+    } else {
       return chackTaskIsNotNull(rootTask, chackTask);
-    }
+    }*/
   }
 
-  myFloatingActionButton(BuildContext context, bool chackTaskIsNull) {
+  myFloatingActionButton(BuildContext context, bool chackTaskIsNull,
+      ChackTask chack, RootTask root) {
     return Container(
-          // При перемещении на телефоне активный обьект перерисовывается в синий цвет...
-          child: Column(  //Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
-                child: FloatingActionButton(
-                  onPressed: () {
-                    if(chackTaskIsNull == true){
-                      BlocProvider.of<ProviderBloc>(context).add(RootEvent());
-                    } else {
-                      BlocProvider.of<ProviderBloc>(context).add(ChackEvent(rootTask));
-                    }
-                    
-                  },
-                  child: Icon(Icons.check),
-                  backgroundColor: Theme.of(context).accentColor,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
-                child: FloatingActionButton(
-                  onPressed: () {
-                    print('press Up');
-                    if(chackTaskIsNull == true){
-                      BlocProvider.of<TaskBloc>(context)
-                        .add(RootTaskUpdateEvent(rootTask.id, -1, rootTask.text, 0, 0));
-                    } else {
-                      BlocProvider.of<ChackTaskBloc>(context)
-                        .add(ChackTaskUpdateEvent(chackTask.id, -1, chackTask.text, false));
-                    }
-                    
-                  },
-                  child: Icon(Icons.arrow_upward),
-                  backgroundColor: Theme.of(context).accentColor,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
-                child: FloatingActionButton(
-                  onPressed: () {
-                    print('press Bottom');
-                    if(chackTaskIsNull == true){
-                      BlocProvider.of<TaskBloc>(context)
-                        .add(RootTaskUpdateEvent(rootTask.id, 1, rootTask.text, 0 ,0));
-                    } else {
-                      BlocProvider.of<ChackTaskBloc>(context)
-                        .add(ChackTaskUpdateEvent(chackTask.id, 1, chackTask.text, false));
-                    }
-                    
-                  },
-                  child: Icon(Icons.arrow_downward),
-                  backgroundColor: Theme.of(context).accentColor,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
-                child: FloatingActionButton.extended(
-                  onPressed: () {
-                    if(chackTaskIsNull == true){
-                      print('root rewrite');
-                      BlocProvider.of<ProviderBloc>(context).add(DialogEvent(true, rootTask, null));
-                    } else {
-                      print('chack rewrite');
-                      BlocProvider.of<ProviderBloc>(context).add(DialogEvent(true, rootTask, chackTask));
-                    }
-                    
-                  },
-                  label: Text('Rewrite'),
-                  icon: Icon(Icons.create),
-                  backgroundColor: Theme.of(context).accentColor,
-                ),
-              ),
-            ],
+      // При перемещении на телефоне активный обьект перерисовывается в синий цвет...
+      child: Column(
+        //Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
+            child: FloatingActionButton(
+              onPressed: () {
+                if (chackTaskIsNull == true) {
+                  //BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      duration: Duration(seconds: 3),
+                      content: Row(
+                        children: <Widget>[
+                          CircularProgressIndicator(
+                            //value: 0.4,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).accentColor),
+                          ),
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
+                              child: Text("Удалить ${root.text}?"),
+                            ),
+                          ),
+                          TextButton(
+                            style: ButtonStyle(
+                              minimumSize: MaterialStateProperty.all<Size>(
+                                  Size(80.0, 50.0)),
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Theme.of(context).accentColor),
+                            ),
+                            child: Text("Да"),
+                            onPressed: () {
+                              BlocProvider.of<TaskBloc>(context)
+                                  .add(RootTaskDeletedEvent(root.id));
+                              ScaffoldMessenger.of(context)
+                                  .removeCurrentSnackBar();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else {
+                  //BlocProvider.of<ProviderBloc>(context).add(ChackEvent(rootTask));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      duration: Duration(seconds: 3),
+                      content: Row(
+                        children: <Widget>[
+                          CircularProgressIndicator(
+                            //value: 0.4,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).accentColor),
+                          ),
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
+                              child: Text("Удалить ${chack.text}?"),
+                            ),
+                          ),
+                          TextButton(
+                            style: ButtonStyle(
+                              minimumSize: MaterialStateProperty.all<Size>(
+                                  Size(80.0, 50.0)),
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Theme.of(context).accentColor),
+                            ),
+                            child: Text("Да"),
+                            onPressed: () {
+                              BlocProvider.of<ChackTaskBloc>(context)
+                                  .add(ChackTaskDeletedEvent(chack.id));
+                              ScaffoldMessenger.of(context)
+                                  .removeCurrentSnackBar();
+                              BlocProvider.of<TaskBloc>(context).add(
+                                  RootTaskUpdateEvent(
+                                      root.id, 0, root.text, 0, -1));
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: Icon(Icons.delete_forever_outlined),
+              backgroundColor: Theme.of(context).accentColor,
+            ),
           ),
-        );
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget> [
+          Container(
+            margin: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
+            child: FloatingActionButton(
+              onPressed: () {
+                print('press Up');
+                if (chackTaskIsNull == true) {
+                  BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(
+                      rootTask.id, -1, rootTask.text, 0, 0));
+                } else {
+                  BlocProvider.of<ChackTaskBloc>(context).add(
+                      ChackTaskUpdateEvent(
+                          chackTask.id, -1, chackTask.text, false));
+                }
+              },
+              child: Icon(Icons.arrow_upward),
+              backgroundColor: Theme.of(context).accentColor,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
+            child: FloatingActionButton(
+              onPressed: () {
+                print('press Bottom');
+                if (chackTaskIsNull == true) {
+                  BlocProvider.of<TaskBloc>(context).add(
+                      RootTaskUpdateEvent(rootTask.id, 1, rootTask.text, 0, 0));
+                } else {
+                  BlocProvider.of<ChackTaskBloc>(context).add(
+                      ChackTaskUpdateEvent(
+                          chackTask.id, 1, chackTask.text, false));
+                }
+              },
+              child: Icon(Icons.arrow_downward),
+              backgroundColor: Theme.of(context).accentColor,
+            ),
+          ),],
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
+            child: FloatingActionButton.extended(
+              onPressed: () {
+                if (chackTaskIsNull == true) {
+                  print('root rewrite');
+                  BlocProvider.of<ProviderBloc>(context)
+                      .add(DialogEvent(true, rootTask, null));
+                } else {
+                  print('chack rewrite');
+                  BlocProvider.of<ProviderBloc>(context)
+                      .add(DialogEvent(true, rootTask, chackTask));
+                }
+              },
+              label: Text('Редактировать'),
+              icon: Icon(Icons.create),
+              backgroundColor: Theme.of(context).accentColor,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   chackTaskIsNull(RootTask rootTask) {
     print('chack task is null');
-    return BlocBuilder<TaskBloc, RootTaskState>(builder: (context, state) {
+    return 
+    BlocBuilder<TaskBloc, RootTaskState>(builder: (context, state) {
       List<RootTask> tasks;
       if (state is RootTaskLoadSuccessState) {
         //print('tasks = state.tasks');
@@ -132,11 +216,18 @@ class UpdatePage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Theme.of(context).accentColor,
           foregroundColor: Theme.of(context).textTheme.headline6.color,
-          title: Text('Update ${rootTask.text}'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+            },
+          ),
+          title: Text('Изменить ${rootTask.text}'),
         ),
         body: ListView.builder(
-            itemCount: tasks == [] ? 0 :
-                tasks.length, //.db.getAllTask().length,//MyDB.db.myDB.length,
+            itemCount: tasks == []
+                ? 0
+                : tasks.length, //.db.getAllTask().length,//MyDB.db.myDB.length,
             itemBuilder: (context, index) {
               print("${tasks[index].toMap()} == ${rootTask.toMap()}  ?");
               //print("ListView.builder");
@@ -144,7 +235,8 @@ class UpdatePage extends StatelessWidget {
                 onTap: () {
                   print(tasks[index].id);
                   print(tasks[index].text);
-                  BlocProvider.of<ProviderBloc>(context).add(UpdateEvent(tasks[index], null));
+                  BlocProvider.of<ProviderBloc>(context)
+                      .add(UpdateEvent(tasks[index], null));
                 },
                 onLongPress: () {
                   print("Long press on ${tasks[index].id}");
@@ -173,7 +265,7 @@ class UpdatePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Center(
-                                child: Text (
+                                child: Text(
                                   " ${tasks[index].text}",
                                   style: tasks[index].id == rootTask.id
                                       ? TextStyle(fontWeight: FontWeight.bold)
@@ -190,7 +282,8 @@ class UpdatePage extends StatelessWidget {
                 ),
               );
             }),
-        floatingActionButton: myFloatingActionButton(context, true), /*Container(
+        floatingActionButton: myFloatingActionButton(context,
+            true, null, rootTask), /*Container(
           // При перемещении на телефоне активный обьект перерисовывается в синий цвет...
           child: Column(  //Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -255,7 +348,8 @@ class UpdatePage extends StatelessWidget {
 
   chackTaskIsNotNull(RootTask rootTask, ChackTask chackTask) {
     print('chack task is NOT null');
-    return BlocBuilder<ChackTaskBloc, ChackTaskState>(builder: (context, state) {
+    return BlocBuilder<ChackTaskBloc, ChackTaskState>(
+        builder: (context, state) {
       List<ChackTask> tasks;
       if (state is ChackTaskLoadSuccessState) {
         //print('tasks = state.tasks');
@@ -272,11 +366,20 @@ class UpdatePage extends StatelessWidget {
       //print('tasks == $tasks');
       return Scaffold(
         appBar: AppBar(
-          title: Text('Update ${chackTask.text}'),
+          backgroundColor: Theme.of(context).accentColor,
+          foregroundColor: Theme.of(context).textTheme.headline6.color,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              BlocProvider.of<ProviderBloc>(context).add(ChackEvent(rootTask));
+            },
+          ),
+          title: Text('Изменить ${chackTask.text}'),
         ),
         body: ListView.builder(
-            itemCount: tasks == [] ? 0 :
-                tasks.length, //.db.getAllTask().length,//MyDB.db.myDB.length,
+            itemCount: tasks == []
+                ? 0
+                : tasks.length, //.db.getAllTask().length,//MyDB.db.myDB.length,
             itemBuilder: (context, index) {
               print("${tasks[index].toMap()} == ${chackTask.toMap()}  ?");
               //print("ListView.builder");
@@ -284,7 +387,8 @@ class UpdatePage extends StatelessWidget {
                 onTap: () {
                   print(tasks[index].id);
                   print(tasks[index].text);
-                  BlocProvider.of<ProviderBloc>(context).add(UpdateEvent(rootTask, tasks[index]));
+                  BlocProvider.of<ProviderBloc>(context)
+                      .add(UpdateEvent(rootTask, tasks[index]));
                 },
                 onLongPress: () {
                   print("Long press on ${tasks[index].id}");
@@ -302,7 +406,10 @@ class UpdatePage extends StatelessWidget {
                       width: 1.5,
                     ),
                     borderRadius: BorderRadius.circular(30.0),
-                    color: Theme.of(context).textTheme.headline6.color, //Colors.white,
+                    color: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        .color, //Colors.white,
                   ),
                   child: Row(
                     children: <Widget>[
@@ -313,7 +420,7 @@ class UpdatePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Center(
-                                child: Text (
+                                child: Text(
                                   " ${tasks[index].text}",
                                   style: tasks[index].id == chackTask.id
                                       ? TextStyle(fontWeight: FontWeight.bold)
@@ -330,7 +437,8 @@ class UpdatePage extends StatelessWidget {
                 ),
               );
             }),
-        floatingActionButton: myFloatingActionButton(context, false), /*Container(
+        floatingActionButton: myFloatingActionButton(context,
+            false, chackTask, rootTask), /*Container(
           // При перемещении на телефоне активный обьект перерисовывается в синий цвет...
           child: Column(  //Row(
             mainAxisAlignment: MainAxisAlignment.end,
