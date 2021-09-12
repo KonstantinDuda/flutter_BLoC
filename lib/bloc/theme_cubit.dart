@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+//import '../database/theme_state_file.dart';
 
 class ThemeCubit extends Cubit<ThemeData> {
   // Передаем родительскому классу стартовое значение
@@ -27,7 +28,7 @@ class ThemeCubit extends Cubit<ThemeData> {
     ),
     brightness: Brightness.light,
     primaryColor: Colors.blue,
-    //primaryColorDark: Colors.black,
+    primaryColorDark: Colors.orange,
     accentColor: Colors.blue,
   );
 
@@ -53,11 +54,13 @@ class ThemeCubit extends Cubit<ThemeData> {
     ),
     brightness: Brightness.dark,
     primaryColor: Colors.orange,
-    //primaryColorDark: Colors.white,
+    primaryColorDark: Colors.blue,
     accentColor: Colors.orange,
   );
 
   void toggleTheme() {
+    //print('toggletheme?');
+    //state.brightness == Brightness.dark ? ThemeStateFile().writeState(0) : ThemeStateFile().writeState(1);
     emit(state.brightness == Brightness.dark ? _lightTheme : _darkTheme);
   }
 }

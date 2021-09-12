@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import '../bloc/chack_task_bloc.dart';
+import '../database/chack_task_event.dart';
+//import '../database/chack_task_state.dart';
 
 import '../bloc/root_task_bloc.dart';
 import '../bloc/provider_bloc.dart';
-//import '../bloc/theme_cubit.dart';
+import '../bloc/theme_cubit.dart';
 
-import '../database/task.dart';
-import '../database/task_event.dart';
-import '../database/task_state.dart';
+import '../database/root_task.dart';
+import '../database/root_task_event.dart';
+import '../database/root_task_state.dart';
+import '../database/theme_state_file.dart';
 
 class RootPage extends StatelessWidget {
   //String id;
@@ -17,10 +21,17 @@ class RootPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //var borderColor = Theme.of(context).accentColor;
+
     print("build RootPage");
-    return BlocBuilder<TaskBloc, TaskState>(builder: (context, state) {
-      List<Task> tasks;
-      if (state is TaskLoadSuccessState) {
+    return BlocBuilder<TaskBloc, RootTaskState>(builder: (context, state) {
+      //fn(context);
+      //if(th == null)
+      //  fn();
+      //if(th != 0)
+      //  BlocProvider.of<ThemeCubit>(context).toggleTheme();
+      
+      List<RootTask> tasks;
+      if (state is RootTaskLoadSuccessState) {
         if (state.tasks == null) {
           tasks = [];
         } else
@@ -31,20 +42,34 @@ class RootPage extends StatelessWidget {
       print('tasks == $tasks');
       return Scaffold(
         appBar: AppBar(
+          //shadowColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).accentColor,
+          foregroundColor: Theme.of(context).textTheme.headline6.color,
           title: Text(title),
+          leading: IconButton(
+            icon: Icon(Icons.brightness_4),
+            onPressed: () {
+              BlocProvider.of<ThemeCubit>(context).toggleTheme();
+              ThemeStateFile().writeState(1);
+              print('Change theme');
+            },
+          ),
         ),
         body: ListView.builder(
-            itemCount: tasks == []
-                ? 0
-                : tasks
-                    .length, 
+            itemCount: tasks == [] ? 0 : tasks.length,
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  print(state.props[index]);
+                  print("onTap: ${tasks[index].toMap()}");
+                  BlocProvider.of<ChackTaskBloc>(context)
+                    .add(ChackTaskLoadSuccessEvent(tasks[index].id));
+                  BlocProvider.of<ProviderBloc>(context)
+                    .add(ChackEvent(tasks[index]));
                 },
                 onLongPress: () {
-                  print('longPress on ${tasks[index]}');
+                  print('longPress on ${tasks[index].text}');
+                  BlocProvider.of<ProviderBloc>(context)
+                      .add(UpdateEvent(tasks[index], null));
                 },
                 onHorizontalDragStart: (DragStartDetails start) {
                   print(start);
@@ -55,8 +80,8 @@ class RootPage extends StatelessWidget {
                         children: <Widget>[
                           CircularProgressIndicator(
                             //value: 0.4,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).accentColor),
                           ),
                           Expanded(
                             child: Container(
@@ -68,13 +93,13 @@ class RootPage extends StatelessWidget {
                             style: ButtonStyle(
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(80.0, 50.0)),
-                              backgroundColor:
-                                  MaterialStateProperty.all<Color>(Theme.of(context).accentColor),
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Theme.of(context).accentColor),
                             ),
                             child: Text("yes"),
                             onPressed: () {
                               BlocProvider.of<TaskBloc>(context)
-                                  .add(TaskDeletedEvent(tasks[index].id));
+                                  .add(RootTaskDeletedEvent(tasks[index].id));
                               ScaffoldMessenger.of(context)
                                   .removeCurrentSnackBar();
                             },
@@ -99,27 +124,25 @@ class RootPage extends StatelessWidget {
                       Expanded(
                         child: Container(
                           //color: Colors.red,
-                          margin: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 5.0),
+                          margin: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 15.0),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Center(
-                                child: Text (
+                                child: Text(
                                   "${tasks[index].text}",
                                 ),
                               ),
-                              LinearPercentIndicator(
-                                alignment: MainAxisAlignment.center,
-                                // Переменную ширины нужно брать из блока
-                                width: MediaQuery.of(context).size.width /
-                                    2, // MediaQuery.of(context).size.width / 2,
-                                lineHeight: 3.5,
-                                percent: tasks[index].completedTaskProcent,
-                                leading: Text("${tasks[index].completedTaskCount}"),
-                                //center: Text("50"),
-                                trailing: Text("${tasks[index].allTaskCount}"), // Задается в обьекте
-                                progressColor: Theme.of(context).accentColor,
-                                linearStrokeCap: LinearStrokeCap.roundAll,
+                              OrientationBuilder(
+                                builder: (context, orientation) {
+                                  return orientation == Orientation.portrait
+                                      ? _myLinearProcentIndicator(context,
+                                          tasks[index].completedTaskProcent)
+                                      : _myLinearProcentIndicator(
+                                          context,
+                                          tasks[index]
+                                              .completedTaskProcent); //_buildHorizontalLayout();
+                                },
                               ),
                             ],
                           ),
@@ -127,7 +150,8 @@ class RootPage extends StatelessWidget {
                       ),
                       Container(
                         margin: EdgeInsets.only(right: 15.0),
-                        child: Text("0 / 0"),
+                        child: Text(
+                            "${tasks[index].completedTaskCount} / ${tasks[index].allTaskCount}"),
                       ),
                     ],
                   ),
@@ -136,7 +160,8 @@ class RootPage extends StatelessWidget {
             }),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            BlocProvider.of<ProviderBloc>(context).add(DialogEvent(null));
+            BlocProvider.of<ProviderBloc>(context)
+                .add(DialogEvent(false, null, null));
           },
           label: Text('Task'),
           icon: Icon(Icons.add),
@@ -144,5 +169,22 @@ class RootPage extends StatelessWidget {
         ),
       );
     });
+  }
+
+  _myLinearProcentIndicator(BuildContext context, double completedTaskProcent) {
+    return LinearPercentIndicator(
+      alignment: MainAxisAlignment.center,
+      padding: EdgeInsets.only(top: 5.0),
+      // Переменную ширины нужно брать из блока
+      width: MediaQuery.of(context).size.width /
+          2, // MediaQuery.of(context).size.width / 2,
+      lineHeight: 3.5,
+      percent: completedTaskProcent,
+      //leading: Text("0"),
+      //center: Text("50"),
+      //trailing: Text("100%"), // Задается в обьекте
+      progressColor: Theme.of(context).accentColor,
+      linearStrokeCap: LinearStrokeCap.roundAll,
+    );
   }
 }

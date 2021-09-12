@@ -2,7 +2,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../database/task.dart';
+import '../database/root_task.dart';
+import '../database/chack_task.dart';
 
 class ProviderEvent extends Equatable {
   ProviderEvent();
@@ -12,23 +13,33 @@ class ProviderEvent extends Equatable {
 }
 
 class RootEvent extends ProviderEvent {}
+class ChackEvent extends ProviderEvent {
+  final RootTask task;
 
-class DialogEvent extends ProviderEvent {
-  final Task task;
-
-  DialogEvent(this.task);
+  ChackEvent(this.task);
 
   @override 
   List<Object> get props => [task];
 }
 
-class UpdateEvent extends ProviderEvent {
-  final Task task;
-
-  UpdateEvent(this.task);
+class DialogEvent extends ProviderEvent {
+  final RootTask rootTask;
+  final ChackTask chackTask;
+  final bool changeObj;
+  DialogEvent(this.changeObj , this.rootTask, this.chackTask);
 
   @override 
-  List<Object> get props => [task];
+  List<Object> get props => [changeObj , rootTask, chackTask];
+}
+
+class UpdateEvent extends ProviderEvent {
+  final RootTask rootTask;
+  final ChackTask chackTask;
+
+  UpdateEvent(this.rootTask, this.chackTask);
+
+  @override 
+  List<Object> get props => [rootTask, chackTask];
 }
 
 //@immutable 
@@ -40,23 +51,33 @@ class ProviderState  extends Equatable{
 }
 
 class RootState extends ProviderState {}
+class ChackState extends ProviderState {
+  final RootTask task;
 
-class DialogState extends ProviderState {
-  final Task task;
-
-  DialogState(this.task);
+  ChackState(this.task);
 
   @override 
   List<Object> get props => [task];
 }
 
-class UpdateState extends ProviderState {
-  final Task task;
-
-  UpdateState(this.task);
+class DialogState extends ProviderState {
+  final RootTask rootTask;
+  final ChackTask chackTask;
+  final bool changeObj;
+  DialogState(this.changeObj, this.rootTask, this.chackTask);
 
   @override 
-  List<Object> get props => [task];
+  List<Object> get props => [changeObj, rootTask, chackTask];
+}
+
+class UpdateState extends ProviderState {
+  final RootTask rootTask;
+  final ChackTask chackTask;
+
+  UpdateState(this.rootTask, this.chackTask);
+
+  @override 
+  List<Object> get props => [rootTask, chackTask];
 }
 
 class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
@@ -67,9 +88,11 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     if(event is RootEvent) {
       yield RootState();
     } else if(event is DialogEvent) {
-      yield DialogState(event.task);
+      yield DialogState(event.changeObj, event.rootTask, event.chackTask);
     } else if(event is UpdateEvent) {
-      yield UpdateState(event.task);
+      yield UpdateState(event.rootTask, event.chackTask);
+    } else if(event is ChackEvent) {
+      yield ChackState(event.task);
     }
   }
 }

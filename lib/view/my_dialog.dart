@@ -1,50 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+//import 'package:task_sheduler/database/chack_task_event.dart';
 
 import '../bloc/provider_bloc.dart';
 import '../bloc/root_task_bloc.dart';
+import '../bloc/chack_task_bloc.dart';
 
 import '../database/root_task.dart';
-import '../database/task_event.dart';
+import '../database/root_task_event.dart';
+import '../database/chack_task.dart';
+import '../database/chack_task_event.dart';
 
 class MyDialog extends StatelessWidget {
   
-  final RootTask task;
-  MyDialog(this.task);
+  final bool changeObj;
+  final RootTask rootTask;
+  final ChackTask chackTask;
+  MyDialog(this.changeObj, this.rootTask,this.chackTask);
+
+  String newText = '';
 
   @override
   Widget build(BuildContext context) {
-    String newText = '';
-    if(task != null) {
-      newText = task.text;
-      print('Text in myDialog ${task.text.length}');
+    
+    if(changeObj == true) {
+      if(chackTask != null) {
+        newText = chackTask.text;
+        print('Text in myDialog ${chackTask.text.length}');
+      } else if(rootTask != null) {
+        newText = rootTask.text;
+        print('Text in myDialog ${rootTask.text.length}');
+      } else {
+        print('All these object null in Dialog');
+      }
     }
     
-    return Card(
-      child: Row(
-        children: <Widget>[
-          Expanded ( child:
-          Container(
+    return  WillPopScope(
+      onWillPop: () async { BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+      return false; },
+      child: Scaffold(
+      body: Container(
             //color: Theme.of(context).primaryColor,
-            width: MediaQuery.of(context).size.width * 0.7,
+            width: MediaQuery.of(context).size.width, // * 0.7,
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(30.0)),
               color: Theme.of(context).primaryColor,),
             child: Container(
-              margin: EdgeInsets.fromLTRB(5, 5, 5, 5), //EdgeInsets.all(10),
+              margin: EdgeInsets.fromLTRB(5, 25, 5, 5), //EdgeInsets.all(10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(30.0)),
                 color: Theme.of(context).textTheme.headline6.color,
               ),
               child:  
               TextField(
+                
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.fromLTRB(10, 10 ,10, 10),
+                  border: InputBorder.none,
                 ),
-                onChanged: (value) => newText = value,
+                onChanged: (value) { newText = value; print('$newText'); return newText;},
                 controller: TextEditingController(text: newText),
-                cursorColor: Colors.black,
+                cursorColor: Theme.of(context).textTheme.headline5.color,
                 expands: true,
                 style: Theme.of(context).textTheme.headline5,
                 maxLines: null,
@@ -52,63 +69,67 @@ class MyDialog extends StatelessWidget {
                 autofocus: true,
               ),
             ),
-          ),),
-          VerticalDivider(width: 5.0,),
-          Column(
+          ),
+            floatingActionButton: myFloatingActionButton(context),
+    )
+    );
+  }
+
+  myFloatingActionButton(BuildContext context) {
+    print('newText == $newText');
+    return Container(
+          // При перемещении на телефоне активный обьект перерисовывается в синий цвет...
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              GestureDetector(
-                child: Container(
-                  //margin: EdgeInsets.fromLTRB(0, 2.5, 2.5, 2.5),
-                  height: MediaQuery.of(context).size.height * 0.29,
-                  width: MediaQuery.of(context).size.width * 0.25,
-                  decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(30.0)),
-              color: Theme.of(context).primaryColor),
-                  //color: Theme.of(context).primaryColor,
-                  child: Center(
-                    child: Text(
-                      'Save',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ),
+              Container(
+                margin: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
+                child: FloatingActionButton.extended(
+                  label: Text('Закрыть'),
+                  onPressed: () {
+                    if(chackTask != null) {
+                      BlocProvider.of<ProviderBloc>(context).add(ChackEvent(rootTask));
+                    } else {
+                      BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                    }
+                  },
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
-                onTap: () {
-                  print("Go to the Root Page");
-                  if(task == null) {
-                    print("TaskAddedEvent($newText) in Dialog");
-                    BlocProvider.of<TaskBloc>(context).add(TaskAddedEvent(newText));
-                    BlocProvider.of<ProviderBloc>(context).add(RootEvent());
-                  } else {
-                    BlocProvider.of<TaskBloc>(context).add(TaskUpdateEvent(task.id, 0, newText));
-                    BlocProvider.of<ProviderBloc>(context).add(UpdateEvent(task));
-                  }
-                },
               ),
-              Divider(height: 5.0,),
-              GestureDetector(
-                child: Container(
-                  //margin: EdgeInsets.fromLTRB(0, 2.5, 2.5, 2.5),
-                  height: MediaQuery.of(context).size.height * 0.29,
-                  width: MediaQuery.of(context).size.width * 0.25,
-                  decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(30.0)),
-              color: Theme.of(context).primaryColor,),
-                  //color: Theme.of(context).primaryColor,
-                  child: Center(
-                    child: Text(
-                      'Cancel',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ),
+              Container(
+                margin: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
+                child: FloatingActionButton.extended(
+                  label: Text('Сохранить'),
+                  onPressed: () {
+                    if(changeObj == true) {
+                      if(chackTask != null && rootTask != null) {
+                        print('if(chackTask != null && rootTask != null)');
+                        BlocProvider.of<ChackTaskBloc>(context).add(ChackTaskUpdateEvent(chackTask.id, 0, newText, false));
+                        BlocProvider.of<ProviderBloc>(context).add(ChackEvent(rootTask));
+                      } else if(rootTask != null && chackTask == null) {
+                        print('if(rootTask != null && chackTask == null)');
+                        BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(rootTask.id, 0, newText, 0, 0));
+                        BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                      }
+                    } else {
+                      if(rootTask != null) {
+                        print('if(rootTask != null)');
+                        BlocProvider.of<ChackTaskBloc>(context).add(ChackTaskAddedEvent(newText, rootTask.id));
+                        BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(rootTask.id, 0, rootTask.text, 0, 1));
+                        BlocProvider.of<ProviderBloc>(context).add(ChackEvent(rootTask));
+                      } else {
+                        print('else');
+                        BlocProvider.of<TaskBloc>(context).add(RootTaskAddedEvent(newText));
+                        BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                      }
+                    }
+                  },
+                  backgroundColor: Theme.of(context).accentColor,
                 ),
-                onTap: () {
-                  BlocProvider.of<ProviderBloc>(context).add(RootEvent());
-                },
               ),
             ],
           ),
-        ],
-      ),
-    );
+        );
   }
 }
