@@ -7,7 +7,7 @@ import '../database/root_task_state.dart';
 import '../database/root_task.dart';
 //import '../bloc/counter_bloc.dart';
 import 'root_page.dart';
-//import 'chack_page.dart';
+//import 'check_page.dart';
 //import 'body.dart';
 //import '../bloc/theme_cubit.dart';
 //import 'my_drawer.dart';
@@ -54,7 +54,7 @@ class HorizontalPage extends StatelessWidget {
           VerticalDivider(),  // Новый обьект
           Container(
             width: MediaQuery.of(context).size.width * 0.7,
-            child: Body(Icons.remove), //ChackPage(),
+            child: Body(Icons.remove), //CheckPage(),
           ),
         ],
       ),*/
@@ -63,12 +63,12 @@ class HorizontalPage extends StatelessWidget {
 
   _buildVerticalLayout() {
     return RootPage();
-    //return ChackPage();
+    //return CheckPage();
   }
 
   _buildHorizontalLayout(BuildContext context) {
     return RootPage();
-    //return ChackPage();
+    //return CheckPage();
     /*return Scaffold(
       appBar: AppBar(title: Text('Horisontal orientation',
         /*style: Theme.of(context).textTheme.headline6,*/),),
@@ -83,7 +83,7 @@ class HorizontalPage extends StatelessWidget {
           VerticalDivider(),  // Новый обьект
           Container(
             width: MediaQuery.of(context).size.width * 0.68,
-            child: Body(Icons.remove), //ChackPage(),
+            child: Body(Icons.remove), //CheckPage(),
           ),
         ],
       ),);*/

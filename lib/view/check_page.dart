@@ -4,41 +4,41 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../database/root_task.dart';
 
 import '../bloc/root_task_bloc.dart';
-import '../bloc/chack_task_bloc.dart';
+import '../bloc/check_task_bloc.dart';
 import '../bloc/provider_bloc.dart';
 //import '../bloc/theme_cubit.dart';
 
-import '../database/chack_task.dart';
-import '../database/chack_task_event.dart';
+import '../database/check_task.dart';
+import '../database/check_task_event.dart';
 import '../database/root_task_event.dart';
-import '../database/chack_task_state.dart';
+import '../database/check_task_state.dart';
 
-class ChackPage extends StatelessWidget {
+class CheckPage extends StatelessWidget {
   //String id;
   final RootTask task;
-  ChackPage(this.task);
+  CheckPage(this.task);
 
   @override
   Widget build(BuildContext context) {
     //var borderColor = Theme.of(context).accentColor;
-    //ChackTaskBloc().add(ChackTaskLoadSuccessEvent(task.id));
-    print("build ChackPage on ${task.text}");
+    //CheckTaskBloc().add(CheckTaskLoadSuccessEvent(task.id));
+    print("build CheckPage on ${task.text}");
     return WillPopScope(
       onWillPop: () async { BlocProvider.of<ProviderBloc>(context).add(RootEvent());
       return false; },
       child:
-    BlocBuilder<ChackTaskBloc, ChackTaskState>(builder: (context, state) {
-      /*BlocProvider.of<ChackTaskBloc>(context)
-                    .add(ChackTaskLoadSuccessEvent(task.id));*/
-      List<ChackTask> tasks;
-      if (state is ChackTaskLoadSuccessState) {
+    BlocBuilder<CheckTaskBloc, CheckTaskState>(builder: (context, state) {
+      /*BlocProvider.of<CheckTaskBloc>(context)
+                    .add(CheckTaskLoadSuccessEvent(task.id));*/
+      List<CheckTask> tasks;
+      if (state is CheckTaskLoadSuccessState) {
         if (state.tasks == null) {
           tasks = [];
         } else {
           tasks = state.tasks;
-          //List<ChackTask> allTasks;
+          //List<CheckTask> allTasks;
           //allTasks = state.tasks;
-          //for(ChackTask localTask in allTasks) {
+          //for(CheckTask localTask in allTasks) {
           //  if(localTask.rootID == task.id) {
           //    tasks.add(localTask);
           //  }
@@ -69,12 +69,12 @@ class ChackPage extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   print("onTap: ${tasks[index].text}");
-                  if(tasks[index].chack == 1){
+                  if(tasks[index].check == 1){
                     BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, -1, 0));
-                  } else if(tasks[index].chack == 0) {
+                  } else if(tasks[index].check == 0) {
                     BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, 1, 0));
                   }
-                  BlocProvider.of<ChackTaskBloc>(context).add(ChackTaskUpdateEvent(tasks[index].id, 0, tasks[index].text ,true));
+                  BlocProvider.of<CheckTaskBloc>(context).add(CheckTaskUpdateEvent(tasks[index].id, 0, tasks[index].text ,true));
                 },
                 onLongPress: () {
                   print('longPress on ${tasks[index].text}');
@@ -96,7 +96,7 @@ class ChackPage extends StatelessWidget {
                           Expanded(
                             child: Container(
                               margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
-                              child: Text("Delete ${tasks[index].text}?"),
+                              child: Text("Удалить ${tasks[index].text}?"),
                             ),
                           ),
                           TextButton(
@@ -106,10 +106,10 @@ class ChackPage extends StatelessWidget {
                               backgroundColor:
                                   MaterialStateProperty.all<Color>(Theme.of(context).accentColor),
                             ),
-                            child: Text("yes"),
+                            child: Text("Да"),
                             onPressed: () {
-                              BlocProvider.of<ChackTaskBloc>(context)
-                                  .add(ChackTaskDeletedEvent(tasks[index].id));
+                              BlocProvider.of<CheckTaskBloc>(context)
+                                  .add(CheckTaskDeletedEvent(tasks[index].id));
                               ScaffoldMessenger.of(context)
                                   .removeCurrentSnackBar();
                               BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, 0, -1));
@@ -154,14 +154,14 @@ class ChackPage extends StatelessWidget {
                         child: Checkbox(
                           activeColor: Theme.of(context).primaryColor,
                           checkColor: Theme.of(context).textTheme.headline6.color,
-                          value: tasks[index].chack == 1 ? true : false,
+                          value: tasks[index].check == 1 ? true : false,
                           onChanged: (bool value) {
-                            if(tasks[index].chack == 1){
+                            if(tasks[index].check == 1){
                               BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, -1, 0));
-                            } else if(tasks[index].chack == 0) {
+                            } else if(tasks[index].check == 0) {
                               BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, 1, 0));
                             }
-                            BlocProvider.of<ChackTaskBloc>(context).add(ChackTaskUpdateEvent(tasks[index].id, 0, tasks[index].text ,true));
+                            BlocProvider.of<CheckTaskBloc>(context).add(CheckTaskUpdateEvent(tasks[index].id, 0, tasks[index].text ,true));
                           },
                         ),
                       ),
@@ -174,7 +174,7 @@ class ChackPage extends StatelessWidget {
           onPressed: () {
             BlocProvider.of<ProviderBloc>(context).add(DialogEvent(false, task, null));
           },
-          label: Text('Task'),
+          label: Text('Задача'),
           icon: Icon(Icons.add),
           backgroundColor: Theme.of(context).accentColor,
         ),

@@ -90,7 +90,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
 
     RootTask updateTask;
     int updateTaskIndex;
-    int completedTaskCount;
+    //int completedTaskCount;
     int allTaskCount;
     
     for(int i = 0; i < list.length; i++) {
@@ -98,7 +98,7 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
         print("if(list[i].id == event.id)");
         updateTask = list[i];
         updateTaskIndex = i;
-        completedTaskCount = list[i].completedTaskCount;
+        //completedTaskCount = list[i].completedTaskCount;
         allTaskCount = list[i].allTaskCount;
       }
     }
@@ -111,10 +111,10 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
       //print("updateTask.completedTaskProcent event.allTaskCount > 0== ${updateTask.completedTaskProcent}");
     } else if(event.allTaskCount < 0) {
       updateTask.allTaskCount--;
-      var list = await _database.getGroupTasksChack(updateTask.id);
+      var list = await _database.getGroupTasksCheck(updateTask.id);
       var completedTaskCount = 0;
       for(var i in list) {
-        if (i.chack > 0) completedTaskCount++;
+        if (i.check > 0) completedTaskCount++;
       }
       updateTask.completedTaskCount = completedTaskCount;
       updateTask.completedTaskProcent = _newCompletedTaskProcent(updateTask.allTaskCount, updateTask.completedTaskCount);
@@ -222,18 +222,20 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
         //updateTaskIndex = i;
       }
     }
-    /*for(int i = 0; i < list.length; i++){
-      if(list[i].position > updateTask.position) {
-        final newTask = list[i];
-        newTask.position -= 1;
-        //print("${newTask.toMap()}");
-        //await _database.updateTask(newTask);
-      }
-    }*/
 
     // Mobile version
     if(deleteTask.allTaskCount > 0)
-      await _database.deleteGroupTasksChack(event.id);
+      await _database.deleteGroupTasksCheck(event.id);
+
+    for(int i = 0; i < list.length; i++){
+      if(list[i].position > deleteTask.position) {
+        final newTask = list[i];
+        newTask.position -= 1;
+        print("${newTask.toMap()}");
+        await _database.updateTask(newTask);
+      }
+    }
+
     await _database.deleteTask(event.id);
     final listNew = await _database.getAllTasks();
     

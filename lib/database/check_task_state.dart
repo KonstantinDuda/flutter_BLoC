@@ -1,24 +1,24 @@
 import 'package:equatable/equatable.dart';
-import 'chack_task.dart';
+import 'check_task.dart';
 
-class ChackTaskState extends Equatable {
-  ChackTaskState();
+class CheckTaskState extends Equatable {
+  CheckTaskState();
 
   @override 
   List<Object> get props => [];
 }
 // Состояние загрузки 
-class ChackTaskLoadInProgressState extends ChackTaskState {}
+class CheckTaskLoadInProgressState extends CheckTaskState {}
 
 // Состояние успешно загруженных данных
-class ChackTaskLoadSuccessState extends ChackTaskState {
-  final List<ChackTask> tasks;
+class CheckTaskLoadSuccessState extends CheckTaskState {
+  final List<CheckTask> tasks;
 
-  ChackTaskLoadSuccessState([this.tasks]);
+  CheckTaskLoadSuccessState([this.tasks]);
 
   @override 
   List<Object> get props => [tasks];
 }
 
 // Состояние ошибки при загрузке
-class ChackTaskLoadFailureState extends ChackTaskState {}
+class CheckTaskLoadFailureState extends CheckTaskState {}

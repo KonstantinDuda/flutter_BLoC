@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../database/root_task.dart';
-import '../database/chack_task.dart';
+import '../database/check_task.dart';
 
 class ProviderEvent extends Equatable {
   ProviderEvent();
@@ -13,10 +13,10 @@ class ProviderEvent extends Equatable {
 }
 
 class RootEvent extends ProviderEvent {}
-class ChackEvent extends ProviderEvent {
+class CheckEvent extends ProviderEvent {
   final RootTask task;
 
-  ChackEvent(this.task);
+  CheckEvent(this.task);
 
   @override 
   List<Object> get props => [task];
@@ -24,22 +24,22 @@ class ChackEvent extends ProviderEvent {
 
 class DialogEvent extends ProviderEvent {
   final RootTask rootTask;
-  final ChackTask chackTask;
+  final CheckTask checkTask;
   final bool changeObj;
-  DialogEvent(this.changeObj , this.rootTask, this.chackTask);
+  DialogEvent(this.changeObj , this.rootTask, this.checkTask);
 
   @override 
-  List<Object> get props => [changeObj , rootTask, chackTask];
+  List<Object> get props => [changeObj , rootTask, checkTask];
 }
 
 class UpdateEvent extends ProviderEvent {
   final RootTask rootTask;
-  final ChackTask chackTask;
+  final CheckTask checkTask;
 
-  UpdateEvent(this.rootTask, this.chackTask);
+  UpdateEvent(this.rootTask, this.checkTask);
 
   @override 
-  List<Object> get props => [rootTask, chackTask];
+  List<Object> get props => [rootTask, checkTask];
 }
 
 //@immutable 
@@ -51,10 +51,10 @@ class ProviderState  extends Equatable{
 }
 
 class RootState extends ProviderState {}
-class ChackState extends ProviderState {
+class CheckState extends ProviderState {
   final RootTask task;
 
-  ChackState(this.task);
+  CheckState(this.task);
 
   @override 
   List<Object> get props => [task];
@@ -62,22 +62,22 @@ class ChackState extends ProviderState {
 
 class DialogState extends ProviderState {
   final RootTask rootTask;
-  final ChackTask chackTask;
+  final CheckTask checkTask;
   final bool changeObj;
-  DialogState(this.changeObj, this.rootTask, this.chackTask);
+  DialogState(this.changeObj, this.rootTask, this.checkTask);
 
   @override 
-  List<Object> get props => [changeObj, rootTask, chackTask];
+  List<Object> get props => [changeObj, rootTask, checkTask];
 }
 
 class UpdateState extends ProviderState {
   final RootTask rootTask;
-  final ChackTask chackTask;
+  final CheckTask checkTask;
 
-  UpdateState(this.rootTask, this.chackTask);
+  UpdateState(this.rootTask, this.checkTask);
 
   @override 
-  List<Object> get props => [rootTask, chackTask];
+  List<Object> get props => [rootTask, checkTask];
 }
 
 class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
@@ -88,24 +88,24 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     if(event is RootEvent) {
       yield RootState();
     } else if(event is DialogEvent) {
-      yield DialogState(event.changeObj, event.rootTask, event.chackTask);
+      yield DialogState(event.changeObj, event.rootTask, event.checkTask);
     } else if(event is UpdateEvent) {
-      yield UpdateState(event.rootTask, event.chackTask);
-    } else if(event is ChackEvent) {
-      yield ChackState(event.task);
+      yield UpdateState(event.rootTask, event.checkTask);
+    } else if(event is CheckEvent) {
+      yield CheckState(event.task);
     }
   }
 }
 /*import 'package:flutter_bloc/flutter_bloc.dart';
 
-enum ProviderEvent {rootPage, chackPage, dialog}
+enum ProviderEvent {rootPage, checkPage, dialog}
 
 //@immutable 
 abstract class ProviderState {}
 
 class RootState extends ProviderState {}
 
-class ChackState extends ProviderState {}
+class CheckState extends ProviderState {}
 
 class DialogState extends ProviderState {}
 
@@ -118,8 +118,8 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
       case ProviderEvent.rootPage:
         yield RootState();
         break;
-      case ProviderEvent.chackPage:
-        yield ChackState();
+      case ProviderEvent.checkPage:
+        yield CheckState();
         break;
       case ProviderEvent.dialog:
         yield DialogState();

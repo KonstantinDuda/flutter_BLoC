@@ -1,21 +1,21 @@
 import 'package:equatable/equatable.dart';
-//import 'package:task_sheduler/database/chack_task_state.dart';
+//import 'package:task_sheduler/database/check_task_state.dart';
 //import 'task.dart';
 
 // События
-class ChackTaskEvent extends Equatable {
-  ChackTaskEvent(); 
+class CheckTaskEvent extends Equatable {
+  CheckTaskEvent(); 
 
   @override 
   List<Object> get props => [];
 }
 
 // Событие удачной загрузки 
-class ChackTaskLoadSuccessEvent extends ChackTaskEvent {
+class CheckTaskLoadSuccessEvent extends CheckTaskEvent {
   final int rootID;
   
 
-  ChackTaskLoadSuccessEvent(this.rootID);
+  CheckTaskLoadSuccessEvent(this.rootID);
 
   @override
   List<Object> get props => [rootID];
@@ -24,34 +24,34 @@ class ChackTaskLoadSuccessEvent extends ChackTaskEvent {
 //class TaskLoadFailureEvent extends TaskEvent {}
 
 // Событие добавления обьекта
-class ChackTaskAddedEvent extends ChackTaskEvent {
+class CheckTaskAddedEvent extends CheckTaskEvent {
   final String text;
   final int rootId;
 
-  ChackTaskAddedEvent(this.text, this.rootId);
+  CheckTaskAddedEvent(this.text, this.rootId);
 
   @override 
   List<Object> get props => [text, rootId];
 }
 
 // Событие обновления обьекта
-class ChackTaskUpdateEvent extends ChackTaskEvent {
+class CheckTaskUpdateEvent extends CheckTaskEvent {
   final int id;
   final int newPosition;
   final String newText;
-  final bool chackBox;
+  final bool checkBox;
 
-  ChackTaskUpdateEvent(this.id, this.newPosition, this.newText, this.chackBox);
+  CheckTaskUpdateEvent(this.id, this.newPosition, this.newText, this.checkBox);
 
   @override 
-  List<Object> get props => [id, newPosition, newText, chackBox];
+  List<Object> get props => [id, newPosition, newText, checkBox];
 }
 
 // События удаления обьекта
-class ChackTaskDeletedEvent extends ChackTaskEvent {
+class CheckTaskDeletedEvent extends CheckTaskEvent {
   final int id;
 
-  ChackTaskDeletedEvent(this.id);
+  CheckTaskDeletedEvent(this.id);
 
   @override 
   List<Object> get props => [id];

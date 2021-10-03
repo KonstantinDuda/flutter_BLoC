@@ -8,34 +8,34 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'root_task.dart';
-import 'chack_task.dart';
+import 'check_task.dart';
 
 class RootDBProvider {
   Database _db;
-  Database _dbChack;
+  Database _dbCheck;
   RootDBProvider() {
     initDB();
-    initDBchack();
+    initDBcheck();
   }
 
   static const String nameTableRoot = "ROOT_TASKS";
-  static const String nameTableChack = "CHACK_TASKS";
+  static const String nameTableCheck = "CHECK_TASKS";
 
   Future<Database> get database async {
     WidgetsFlutterBinding.ensureInitialized();
     if (_db != null) return _db;
 
     _db = await initDB();
-    //_db = await initDBchack();
+    //_db = await initDBcheck();
     return _db;
   }
 
   Future<Database> get secondDatabase async {
     WidgetsFlutterBinding.ensureInitialized();
-    if (_dbChack != null) return _dbChack;
+    if (_dbCheck != null) return _dbCheck;
 
-    _dbChack = await initDBchack();
-    return _dbChack;
+    _dbCheck = await initDBcheck();
+    return _dbCheck;
   }
 
   initDB() async {
@@ -59,7 +59,7 @@ class RootDBProvider {
     );
   }
 
-  initDBchack() async {
+  initDBcheck() async {
     //Directory dbPath = await getApplicationDocumentsDirectory();
     var docDirectory = await getDatabasesPath();
     print("my_db initDB() dbPath == $docDirectory");
@@ -69,12 +69,12 @@ class RootDBProvider {
       version: 2,
       onOpen: (db) {},
       onUpgrade: (db, int oldVersion, int newVersion) async {
-        await db.execute("CREATE TABLE IF NOT EXISTS $nameTableChack ("
+        await db.execute("CREATE TABLE IF NOT EXISTS $nameTableCheck ("
             "id INTEGER PRIMARY KEY,"
             "position INTEGER,"
             "text TEXT,"
             "rootID INTEGER,"
-            "chack INTEGER)");
+            "checkBox INTEGER)");
       },
     );
   }
@@ -93,16 +93,16 @@ class RootDBProvider {
     }
   }
 
-  getTaskChack(int id) async {
-    print("my_db getTaskChack() id == $id");
+  getTaskCheck(int id) async {
+    print("my_db getTaskCheck() id == $id");
     final ndb = await secondDatabase;
     if (ndb != null) {
       
       var res =
-          await ndb.query("$nameTableChack", where: "id = ?", whereArgs: [id]);
-      return res.isNotEmpty ? ChackTask.fromMap(res.first) : null;
+          await ndb.query("$nameTableCheck", where: "id = ?", whereArgs: [id]);
+      return res.isNotEmpty ? CheckTask.fromMap(res.first) : null;
     } else {
-      await initDBchack();
+      await initDBcheck();
       return null;
     }
   }
@@ -123,8 +123,8 @@ class RootDBProvider {
     }
   }
 
-  Future<List<ChackTask>> getGroupTasksChack(int id) async {
-    print('getGroupTasksChack');
+  Future<List<CheckTask>> getGroupTasksCheck(int id) async {
+    print('getGroupTasksCheck');
     if(id == null) {
       print('id == null');
       return [];
@@ -133,16 +133,16 @@ class RootDBProvider {
       final ndb = await secondDatabase;
       if (ndb != null) {
         var list = await ndb
-          .query("$nameTableChack", where: "rootID = ?", whereArgs: [id]);
+          .query("$nameTableCheck", where: "rootID = ?", whereArgs: [id]);
 
-        List<ChackTask> tasks =
-          list.isNotEmpty ? list.map((f) => ChackTask.fromMap(f)).toList() : [];
+        List<CheckTask> tasks =
+          list.isNotEmpty ? list.map((f) => CheckTask.fromMap(f)).toList() : [];
         print('tasks == $tasks');
         return tasks;
       } else {
         print('ndb == null');
-        await initDBchack();
-        //return getGroupTasksChack(id);
+        await initDBcheck();
+        //return getGroupTasksCheck(id);
         return [];
       }
     }
@@ -178,30 +178,30 @@ class RootDBProvider {
     }
   }
 
-  newTaskChack(ChackTask newTask) async {
+  newTaskCheck(CheckTask newTask) async {
     final ndb = await secondDatabase;
     if (ndb != null) {
       
       var table =
-          await ndb.rawQuery("SELECT MAX(id)+1 as id FROM $nameTableChack");
+          await ndb.rawQuery("SELECT MAX(id)+1 as id FROM $nameTableCheck");
       int id;
       if (table.first["id"] == null)
         id = 1;
       else
         id = table.first["id"];
-        /*int chack;
-      if(newTask.chack == 1){
-        chack = 1;
-      } else chack = 0;*/
-      print("my_db newTaskChack() id == ${newTask.id}");
+        /*int check;
+      if(newTask.check == 1){
+        check = 1;
+      } else check = 0;*/
+      print("my_db newTaskCheck() id == ${newTask.id}");
       var raw = await ndb.rawInsert(
-          "INSERT Into $nameTableChack (id,position,text,rootID,chack)"
+          "INSERT Into $nameTableCheck (id,position,text,rootID,checkBox)"
           " VALUES (?,?,?,?,?)",
-          [id, newTask.position, newTask.text, newTask.rootID, newTask.chack]);
+          [id, newTask.position, newTask.text, newTask.rootID, newTask.check]);
       return raw;
     } else {
-      await initDBchack();
-      await newTaskChack(newTask);
+      await initDBcheck();
+      await newTaskCheck(newTask);
     }
   }
 
@@ -218,16 +218,16 @@ class RootDBProvider {
     }
   }
 
-  updateTaskChack(ChackTask newTask) async {
-    print("my_db updateTaskChack() newTask == $newTask");
+  updateTaskCheck(CheckTask newTask) async {
+    print("my_db updateTaskCheck() newTask == $newTask");
     final ndb = await secondDatabase;
     if (ndb != null) {
       
-      var res = await ndb.update("$nameTableChack", newTask.toMap(),
+      var res = await ndb.update("$nameTableCheck", newTask.toMap(),
           where: "id = ?", whereArgs: [newTask.id]);
       return res;
     } else {
-      print('updateTaskChack: ndb == null');
+      print('updateTaskCheck: ndb == null');
     }
   }
 
@@ -240,28 +240,28 @@ class RootDBProvider {
     }
   }
 
-  deleteTaskChack(int id) async {
+  deleteTaskCheck(int id) async {
     print("my_db deleteTask() id == $id");
     final ndb = await secondDatabase;
     if (ndb != null) {
       
-      return ndb.delete("$nameTableChack", where: "id = ?", whereArgs: [id]);
+      return ndb.delete("$nameTableCheck", where: "id = ?", whereArgs: [id]);
     }
   }
 
-  deleteGroupTasksChack(int id) async {
+  deleteGroupTasksCheck(int id) async {
     final ndb = await secondDatabase;
     if (ndb != null) {
       
       var list = await ndb
-          .query("$nameTableChack", where: "rootID = ?", whereArgs: [id]);
+          .query("$nameTableCheck", where: "rootID = ?", whereArgs: [id]);
 
       if (list.length > 1)
         return ndb
-            .rawDelete('DELETE FROM "$nameTableChack" WHERE rootId = ?', [id]);
+            .rawDelete('DELETE FROM "$nameTableCheck" WHERE rootId = ?', [id]);
       else if (list.length == 1)
         return ndb
-            .delete("$nameTableChack", where: "rootId = ?", whereArgs: [id]);
+            .delete("$nameTableCheck", where: "rootId = ?", whereArgs: [id]);
     }
   }
 }

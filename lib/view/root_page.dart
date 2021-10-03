@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import '../bloc/chack_task_bloc.dart';
-import '../database/chack_task_event.dart';
-//import '../database/chack_task_state.dart';
+import '../bloc/check_task_bloc.dart';
+import '../database/check_task_event.dart';
+//import '../database/check_task_state.dart';
 
 import '../bloc/root_task_bloc.dart';
 import '../bloc/provider_bloc.dart';
@@ -16,7 +16,7 @@ import '../database/theme_state_file.dart';
 
 class RootPage extends StatelessWidget {
   //String id;
-  final title = 'Flutter Root Page';
+  final title = 'Планировщик';
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +61,10 @@ class RootPage extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   print("onTap: ${tasks[index].toMap()}");
-                  BlocProvider.of<ChackTaskBloc>(context)
-                    .add(ChackTaskLoadSuccessEvent(tasks[index].id));
+                  BlocProvider.of<CheckTaskBloc>(context)
+                    .add(CheckTaskLoadSuccessEvent(tasks[index].id));
                   BlocProvider.of<ProviderBloc>(context)
-                    .add(ChackEvent(tasks[index]));
+                    .add(CheckEvent(tasks[index]));
                 },
                 onLongPress: () {
                   print('longPress on ${tasks[index].text}');
@@ -86,7 +86,7 @@ class RootPage extends StatelessWidget {
                           Expanded(
                             child: Container(
                               margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
-                              child: Text("Delete ${tasks[index].text}?"),
+                              child: Text("Удалить ${tasks[index].text}?"),
                             ),
                           ),
                           TextButton(
@@ -96,7 +96,7 @@ class RootPage extends StatelessWidget {
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   Theme.of(context).accentColor),
                             ),
-                            child: Text("yes"),
+                            child: Text("Да"),
                             onPressed: () {
                               BlocProvider.of<TaskBloc>(context)
                                   .add(RootTaskDeletedEvent(tasks[index].id));
@@ -163,7 +163,7 @@ class RootPage extends StatelessWidget {
             BlocProvider.of<ProviderBloc>(context)
                 .add(DialogEvent(false, null, null));
           },
-          label: Text('Task'),
+          label: Text('Задача'),
           icon: Icon(Icons.add),
           backgroundColor: Theme.of(context).accentColor,
         ),

@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:task_sheduler/bloc/chack_task_bloc.dart';
+//import 'package:task_sheduler/bloc/check_task_bloc.dart';
 
 
 //import 'view/horizontal_page.dart';
 import 'view/root_page.dart';
-import 'view/chack_page.dart';
+import 'view/check_page.dart';
 import 'view/my_dialog.dart';
 import 'view/update_page.dart';
 
 import 'bloc/root_task_bloc.dart';
-import 'bloc/chack_task_bloc.dart';
-//import 'bloc/chack_task_bloc.dart';
+import 'bloc/check_task_bloc.dart';
+//import 'bloc/check_task_bloc.dart';
 import 'bloc/observer.dart';
 import 'bloc/theme_cubit.dart';
 import 'bloc/provider_bloc.dart';
 
 import 'database/root_task.dart';
-import 'database/chack_task.dart';
+import 'database/check_task.dart';
 import 'database/root_task_event.dart';
-import 'database/chack_task_event.dart';
+import 'database/check_task_event.dart';
 import 'database/theme_state_file.dart';
 
 
@@ -27,25 +27,25 @@ void main() {
   // Обьявляем, что нужно использовать наш Делегат (Observer)
   Bloc.observer = SimpleBlocObserver();
   
-  void fn() async {
-    int t = await ThemeStateFile().readState();
+  void getState() async {
+    int themeState = await ThemeStateFile().readState();
     runApp(
     BlocProvider(
       create: (context) => ProviderBloc(),
-      child: App(t),
+      child: App(themeState),
     ),
     );
   }
 
-  fn();
+  getState();
   //ThemeStateFile();
   
 }
 
 // Создаем класс - виджет
 class App extends StatelessWidget {
-  final t;
-  App(this.t);
+  final themeState;
+  App(this.themeState);
   //int _state = 0;
   //int _state;
   /*void fn(BuildContext context) async {
@@ -83,13 +83,13 @@ class App extends StatelessWidget {
     return BlocProvider(
       create: (_) => TaskBloc(list: new List<RootTask>())..add(RootTaskLoadSuccessEvent()),//CounterBloc(), 
       child: BlocProvider(
-        create: (_) => ChackTaskBloc(list: new List<ChackTask>())..add(ChackTaskLoadSuccessEvent(null)),
+        create: (_) => CheckTaskBloc(list: new List<CheckTask>())..add(CheckTaskLoadSuccessEvent(null)),
         child: BlocProvider(
       // Возвращает ThemeCubit через context
       create: (_) {
 
         //fn(context);
-        if(t == 0)
+        if(themeState == 0)
           return ThemeCubit();
         else 
           return ThemeCubit()..toggleTheme();
@@ -109,17 +109,17 @@ class App extends StatelessWidget {
                 if(state is RootState) {
                   print("Root State");
                   return RootPage();
-                } else if(state is ChackState) {
-                  print("ChackState");
-                  return ChackPage(state.task);
+                } else if(state is CheckState) {
+                  print("CheckState");
+                  return CheckPage(state.task);
                 } else if(state is UpdateState) {
                   print("Update State");
-                  return UpdatePage(state.rootTask, state.chackTask);
+                  return UpdatePage(state.rootTask, state.checkTask);
                 } else if(state is DialogState) {
                   print("Dialog State");
-                  return MyDialog(state.changeObj, state.rootTask, state.chackTask);
+                  return MyDialog(state.changeObj, state.rootTask, state.checkTask);
                 }
-              }//=> state is RootState ? HorizontalPage() /*RootPage()*/ : ChackPage(),
+              }//=> state is RootState ? HorizontalPage() /*RootPage()*/ : CheckPage(),
             ),
             /*routes: {
               '/': (context) {
@@ -128,10 +128,10 @@ class App extends StatelessWidget {
                   child:*/ RootPage();//,
                 //);
               },
-              '/chackPage': (context) {
+              '/checkPage': (context) {
                 return /*BlocProvider(
                   create: (_) => CounterBloc(),
-                  child:*/ ChackPage();//,
+                  child:*/ CheckPage();//,
                 //);
               },
             },

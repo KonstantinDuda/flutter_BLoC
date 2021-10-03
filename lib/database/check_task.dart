@@ -1,21 +1,21 @@
-class ChackTask {
+class CheckTask {
   int id;
   int position;
   String text;
   int rootID;
-  int chack;
+  int check;
   /*int allTaskCount;
   int completedTaskCount;
   double completedTaskProcent;*/
 
-  ChackTask({this.text, this.id, this.position, this.rootID, this.chack});
+  CheckTask({this.text, this.id, this.position, this.rootID, this.check});
 
-  factory ChackTask.fromMap(Map<String, dynamic> json) => ChackTask(
+  factory CheckTask.fromMap(Map<String, dynamic> json) => CheckTask(
     id: json["id"],
     position: json["position"],
     text: json["text"],
     rootID: json["rootID"],
-    chack: json["chack"],
+    check: json["checkBox"],
   );
 
   Map<String, dynamic> toMap() => {
@@ -23,6 +23,6 @@ class ChackTask {
     "position": position,
     "text": text,
     "rootID": rootID,
-    "chack": chack,
+    "checkBox": check,
   };
 }

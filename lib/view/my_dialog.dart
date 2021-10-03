@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:task_sheduler/database/chack_task_event.dart';
+//import 'package:task_sheduler/database/check_task_event.dart';
 
 import '../bloc/provider_bloc.dart';
 import '../bloc/root_task_bloc.dart';
-import '../bloc/chack_task_bloc.dart';
+import '../bloc/check_task_bloc.dart';
 
 import '../database/root_task.dart';
 import '../database/root_task_event.dart';
-import '../database/chack_task.dart';
-import '../database/chack_task_event.dart';
+import '../database/check_task.dart';
+import '../database/check_task_event.dart';
 
 class MyDialog extends StatelessWidget {
   
   final bool changeObj;
   final RootTask rootTask;
-  final ChackTask chackTask;
-  MyDialog(this.changeObj, this.rootTask,this.chackTask);
+  final CheckTask checkTask;
+  MyDialog(this.changeObj, this.rootTask,this.checkTask);
 
   String newText = '';
 
@@ -24,9 +24,9 @@ class MyDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     
     if(changeObj == true) {
-      if(chackTask != null) {
-        newText = chackTask.text;
-        print('Text in myDialog ${chackTask.text.length}');
+      if(checkTask != null) {
+        newText = checkTask.text;
+        print('Text in myDialog ${checkTask.text.length}');
       } else if(rootTask != null) {
         newText = rootTask.text;
         print('Text in myDialog ${rootTask.text.length}');
@@ -88,8 +88,8 @@ class MyDialog extends StatelessWidget {
                 child: FloatingActionButton.extended(
                   label: Text('Закрыть'),
                   onPressed: () {
-                    if(chackTask != null) {
-                      BlocProvider.of<ProviderBloc>(context).add(ChackEvent(rootTask));
+                    if(checkTask != null) {
+                      BlocProvider.of<ProviderBloc>(context).add(CheckEvent(rootTask));
                     } else {
                       BlocProvider.of<ProviderBloc>(context).add(RootEvent());
                     }
@@ -103,21 +103,21 @@ class MyDialog extends StatelessWidget {
                   label: Text('Сохранить'),
                   onPressed: () {
                     if(changeObj == true) {
-                      if(chackTask != null && rootTask != null) {
-                        print('if(chackTask != null && rootTask != null)');
-                        BlocProvider.of<ChackTaskBloc>(context).add(ChackTaskUpdateEvent(chackTask.id, 0, newText, false));
-                        BlocProvider.of<ProviderBloc>(context).add(ChackEvent(rootTask));
-                      } else if(rootTask != null && chackTask == null) {
-                        print('if(rootTask != null && chackTask == null)');
+                      if(checkTask != null && rootTask != null) {
+                        print('if(checkTask != null && rootTask != null)');
+                        BlocProvider.of<CheckTaskBloc>(context).add(CheckTaskUpdateEvent(checkTask.id, 0, newText, false));
+                        BlocProvider.of<ProviderBloc>(context).add(CheckEvent(rootTask));
+                      } else if(rootTask != null && checkTask == null) {
+                        print('if(rootTask != null && checkTask == null)');
                         BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(rootTask.id, 0, newText, 0, 0));
                         BlocProvider.of<ProviderBloc>(context).add(RootEvent());
                       }
                     } else {
                       if(rootTask != null) {
                         print('if(rootTask != null)');
-                        BlocProvider.of<ChackTaskBloc>(context).add(ChackTaskAddedEvent(newText, rootTask.id));
+                        BlocProvider.of<CheckTaskBloc>(context).add(CheckTaskAddedEvent(newText, rootTask.id));
                         BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(rootTask.id, 0, rootTask.text, 0, 1));
-                        BlocProvider.of<ProviderBloc>(context).add(ChackEvent(rootTask));
+                        BlocProvider.of<ProviderBloc>(context).add(CheckEvent(rootTask));
                       } else {
                         print('else');
                         BlocProvider.of<TaskBloc>(context).add(RootTaskAddedEvent(newText));

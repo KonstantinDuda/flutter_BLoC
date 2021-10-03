@@ -1,36 +1,36 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../database/dbprovider.dart';
-import '../database/chack_task.dart';
-import '../database/chack_task_event.dart';
-import '../database/chack_task_state.dart';
+import '../database/check_task.dart';
+import '../database/check_task_event.dart';
+import '../database/check_task_state.dart';
 
-class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
+class CheckTaskBloc extends Bloc<CheckTaskEvent, CheckTaskState> {
   
-  List<ChackTask> list = [];
+  List<CheckTask> list = [];
   final _database = new RootDBProvider();
 
-  ChackTaskBloc({this.list}) : super(ChackTaskLoadInProgressState());
+  CheckTaskBloc({this.list}) : super(CheckTaskLoadInProgressState());
 
   @override 
-  Stream<ChackTaskState> mapEventToState(ChackTaskEvent event) async* {
-    if(event is ChackTaskLoadSuccessEvent) {
+  Stream<CheckTaskState> mapEventToState(CheckTaskEvent event) async* {
+    if(event is CheckTaskLoadSuccessEvent) {
       yield* _taskLoadedToState(event);
-    } else if(event is ChackTaskAddedEvent) {
+    } else if(event is CheckTaskAddedEvent) {
       yield* _taskAddedToState(event);
-    } else if(event is ChackTaskUpdateEvent) {
+    } else if(event is CheckTaskUpdateEvent) {
       yield* _taskUpdateToState(event);
-    } else if(event is ChackTaskDeletedEvent) {
+    } else if(event is CheckTaskDeletedEvent) {
       yield* _taskDeleteToState(event);
     }
   }
 
-  Stream<ChackTaskState> _taskLoadedToState(ChackTaskLoadSuccessEvent event) async* {
+  Stream<CheckTaskState> _taskLoadedToState(CheckTaskLoadSuccessEvent event) async* {
     try {
       print('event.rootID == ${event.rootID}');
-      final newList = await _database.getGroupTasksChack(event.rootID);
+      final newList = await _database.getGroupTasksCheck(event.rootID);
       //final newList = list;
-      /*List<ChackTask> newList = [];
+      /*List<CheckTask> newList = [];
       for(int i = 0; i < list.length; i++) {
         if(list[i].rootID == event.rootID) { 
           newList.add(list[i]);
@@ -40,23 +40,23 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
         print('_taskLoadedToState(); a == ${a.toMap()}');
       }*/
       newList.sort((a,b) => a.position.compareTo(b.position));
-      for(ChackTask element in newList) {
+      for(CheckTask element in newList) {
         print("element = ${element.toMap()}");
       }
-      yield ChackTaskLoadSuccessState(newList);
+      yield CheckTaskLoadSuccessState(newList);
       list = newList;
     } catch (_) {
       print('Fail _taskLoadedToState(); dbList');
-      yield ChackTaskLoadFailureState();
+      yield CheckTaskLoadFailureState();
     }
     //final db = list;
     //print('TaskLoadSuccessEvent to State; db == $db');
     //yield TaskLoadSuccessState(db);
   }
 
-  Stream<ChackTaskState> _taskAddedToState(ChackTaskAddedEvent event) async* {
-    if(state is ChackTaskLoadSuccessState) {
-      ChackTask task;
+  Stream<CheckTaskState> _taskAddedToState(CheckTaskAddedEvent event) async* {
+    if(state is CheckTaskLoadSuccessState) {
+      CheckTask task;
       print('_taskAddedToState; list == $list');
       var newPosition = 1;
       for(var i in list) {
@@ -66,40 +66,40 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
       }
       if(list.isEmpty) {
         print('list.isEmpty');
-        task = new ChackTask(
+        task = new CheckTask(
           id: 1,
           position: 1,
           text: event.text,
           rootID: event.rootId,
-          chack: 0,
+          check: 0,
         );
       } else if(list.length > 0) {
           print('list.length > 0');
-          task = new ChackTask(
+          task = new CheckTask(
           id: list[list.length -1].id +1,
           position: newPosition,
           text: event.text,
           rootID: event.rootId,
-          chack: 0,
+          check: 0,
         );
       }
-      await _database.newTaskChack(task);
-      final newList = await _database.getGroupTasksChack(event.rootId);
+      await _database.newTaskCheck(task);
+      final newList = await _database.getGroupTasksCheck(event.rootId);
       //final newList = list;
       
       //newList.add(task);
       newList.sort((a,b) => a.position.compareTo(b.position));
-      for(ChackTask element in newList) {
+      for(CheckTask element in newList) {
       print("element = ${element.toMap()}");
     }
-      yield ChackTaskLoadSuccessState(newList);
+      yield CheckTaskLoadSuccessState(newList);
       list = newList;
     }
   }
 
-  Stream<ChackTaskState> _taskUpdateToState(ChackTaskUpdateEvent event) async* {
+  Stream<CheckTaskState> _taskUpdateToState(CheckTaskUpdateEvent event) async* {
 
-    ChackTask updateTask;
+    CheckTask updateTask;
     int updateTaskIndex;
     
     for(int i = 0; i < list.length; i++) {
@@ -109,9 +109,9 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
         updateTaskIndex = i;
       }
     }
-    if(event.chackBox == true) {
-      updateTask.chack == 1 ? updateTask.chack = 0 : updateTask.chack = 1;
-      _database.updateTaskChack(updateTask);
+    if(event.checkBox == true) {
+      updateTask.check == 1 ? updateTask.check = 0 : updateTask.check = 1;
+      _database.updateTaskCheck(updateTask);
     }
     if(event.newPosition == 0){
       print("if(event.newPosition == 0)");
@@ -124,7 +124,7 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
           if(list[i].position > updateTask.position) {
             list[i].position -= 1;
             final task = list[i];
-            _database.updateTaskChack(task);
+            _database.updateTaskCheck(task);
           }
         }
         updateTask.position = list.length;
@@ -136,7 +136,7 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
             print("if(list[i].position > updateTask.position && list[i].position < (updateTask.position + event.newPosition))");
             list[i].position -= 1;
             final task = list[i];
-            _database.updateTaskChack(task);
+            _database.updateTaskCheck(task);
           }
         }
       updateTask.position += event.newPosition;
@@ -149,7 +149,7 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
           if(list[i].position < updateTask.position) {
             list[i].position += 1;
             final task = list[i];
-            _database.updateTaskChack(task);
+            _database.updateTaskCheck(task);
           }
         }
         updateTask.position = 1;
@@ -160,7 +160,7 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
             print("if(list[i].position < updateTask.position && list[i].position > (updateTask.position + event.newPosition))");
             list[i].position += 1;
             final task = list[i];
-            _database.updateTaskChack(task);
+            _database.updateTaskCheck(task);
           }
       }
       updateTask.position += event.newPosition;
@@ -168,21 +168,21 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
     }
     //list[updateTaskIndex] = updateTask;
 
-    await _database.updateTaskChack(updateTask);
-    final newList = await _database.getGroupTasksChack(updateTask.rootID);
+    await _database.updateTaskCheck(updateTask);
+    final newList = await _database.getGroupTasksCheck(updateTask.rootID);
     //final newList = list;
 
     newList.sort((a,b) => a.position.compareTo(b.position));
-    for(ChackTask element in newList) {
+    for(CheckTask element in newList) {
       print("element = ${element.toMap()}");
     }
-    yield ChackTaskLoadInProgressState();
-    yield ChackTaskLoadSuccessState(newList);
+    yield CheckTaskLoadInProgressState();
+    yield CheckTaskLoadSuccessState(newList);
     list = newList;
   }
 
-  Stream<ChackTaskState> _taskDeleteToState(ChackTaskDeletedEvent event) async* {
-    if(state is ChackTaskLoadSuccessState) {
+  Stream<CheckTaskState> _taskDeleteToState(CheckTaskDeletedEvent event) async* {
+    if(state is CheckTaskLoadSuccessState) {
       print("_taskDeleteToState; state is TaskLoadSuccessState");
       /*  Debug version
       final listNew = (state as TaskLoadSuccessState).tasks;
@@ -192,13 +192,13 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
         print("listNew[i].id == event.id");
       }
     }*/
-    ChackTask updateTask;
+    CheckTask deleteTask;
     //int updateTaskIndex;
     
     for(int i = 0; i < list.length; i++) {
       if(list[i].id == event.id) {
         print("if(list[i].id == event.id)");
-        updateTask = list[i];
+        deleteTask = list[i];
         //updateTaskIndex = i;
       }
     }
@@ -212,19 +212,29 @@ class ChackTaskBloc extends Bloc<ChackTaskEvent, ChackTaskState> {
     }*/
 
     // Mobile version
-    await _database.deleteTaskChack(event.id);
-    final listNew = await _database.getGroupTasksChack(updateTask.rootID);
+    await _database.deleteTaskCheck(event.id);
+
+    for(int i = 0; i < list.length; i++){
+      if(list[i].position > deleteTask.position) {
+        final newTask = list[i];
+        newTask.position -= 1;
+        print("${newTask.toMap()}");
+        await _database.updateTaskCheck(newTask);
+      }
+    }
+
+    final listNew = await _database.getGroupTasksCheck(deleteTask.rootID);
     //final listNew = list;
 
     // It Mobile and Debug version
     listNew.sort((a,b) => a.position.compareTo(b.position));
-    for(ChackTask element in listNew) {
+    for(CheckTask element in listNew) {
       print("new element == ${element.toMap()}");
     }
 
     // TODO исправить все подобные случаи, возможно созданием конструктора копирования
-    yield ChackTaskLoadInProgressState();
-    yield ChackTaskLoadSuccessState(listNew);
+    yield CheckTaskLoadInProgressState();
+    yield CheckTaskLoadSuccessState(listNew);
     list = listNew;
     }
   }
