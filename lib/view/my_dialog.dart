@@ -16,7 +16,7 @@ class MyDialog extends StatelessWidget {
   final bool changeObj;
   final RootTask rootTask;
   final CheckTask checkTask;
-  MyDialog(this.changeObj, this.rootTask,this.checkTask);
+  MyDialog(this.changeObj, this.rootTask, this.checkTask);
 
   String newText = '';
 
@@ -36,7 +36,19 @@ class MyDialog extends StatelessWidget {
     }
     
     return  WillPopScope(
-      onWillPop: () async { BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+      onWillPop: () async { 
+        if(changeObj == true) {
+          if(checkTask != null || rootTask != null) {
+          //newText = checkTask.text;
+            context.read<ProviderBloc>().add(CheckEvent(rootTask));
+          //print('Text in myDialog ${checkTask.text.length}');
+          } else 
+          context.read<ProviderBloc>().add(RootEvent());
+      } else if(rootTask != null) {
+        context.read<ProviderBloc>().add(CheckEvent(rootTask));
+      } else
+        context.read<ProviderBloc>().add(RootEvent());
+        //BlocProvider.of<ProviderBloc>(context).add(RootEvent());
       return false; },
       child: Scaffold(
       body: Container(
@@ -89,12 +101,14 @@ class MyDialog extends StatelessWidget {
                   label: Text('Закрыть'),
                   onPressed: () {
                     if(checkTask != null) {
-                      BlocProvider.of<ProviderBloc>(context).add(CheckEvent(rootTask));
+                      //BlocProvider.of<ProviderBloc>(context).add(CheckEvent(rootTask));
+                      context.read<ProviderBloc>().add(CheckEvent(rootTask));
                     } else {
-                      BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                      //BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                      context.read<ProviderBloc>().add(RootEvent());
                     }
                   },
-                  backgroundColor: Theme.of(context).accentColor,
+                  backgroundColor: Theme.of(context).primaryColor,
                 ),
               ),
               Container(
@@ -105,27 +119,36 @@ class MyDialog extends StatelessWidget {
                     if(changeObj == true) {
                       if(checkTask != null && rootTask != null) {
                         print('if(checkTask != null && rootTask != null)');
-                        BlocProvider.of<CheckTaskBloc>(context).add(CheckTaskUpdateEvent(checkTask.id, 0, newText, false));
-                        BlocProvider.of<ProviderBloc>(context).add(CheckEvent(rootTask));
+                        //BlocProvider.of<CheckTaskBloc>(context).add(CheckTaskUpdateEvent(checkTask.id, 0, newText, false));
+                        //BlocProvider.of<ProviderBloc>(context).add(CheckEvent(rootTask));
+                        context.read<CheckTaskBloc>().add(CheckTaskUpdateEvent(checkTask.id, 0, newText, false));
+                        context.read<ProviderBloc>().add(CheckEvent(rootTask));
                       } else if(rootTask != null && checkTask == null) {
                         print('if(rootTask != null && checkTask == null)');
-                        BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(rootTask.id, 0, newText, 0, 0));
-                        BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                        //BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(rootTask.id, 0, newText, 0, 0));
+                        //BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                        context.read<TaskBloc>().add(RootTaskUpdateEvent(rootTask.id, 0, newText, 0, 0));
+                        context.read<ProviderBloc>().add(RootEvent());
                       }
                     } else {
                       if(rootTask != null) {
                         print('if(rootTask != null)');
-                        BlocProvider.of<CheckTaskBloc>(context).add(CheckTaskAddedEvent(newText, rootTask.id));
-                        BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(rootTask.id, 0, rootTask.text, 0, 1));
-                        BlocProvider.of<ProviderBloc>(context).add(CheckEvent(rootTask));
+                        //BlocProvider.of<CheckTaskBloc>(context).add(CheckTaskAddedEvent(newText, rootTask.id));
+                        //BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(rootTask.id, 0, rootTask.text, 0, 1));
+                        //BlocProvider.of<ProviderBloc>(context).add(CheckEvent(rootTask));
+                        context.read<CheckTaskBloc>().add(CheckTaskAddedEvent(newText, rootTask.id));
+                        context.read<TaskBloc>().add(RootTaskUpdateEvent(rootTask.id, 0, rootTask.text, 0, 1));
+                        context.read<ProviderBloc>().add(CheckEvent(rootTask));
                       } else {
                         print('else');
-                        BlocProvider.of<TaskBloc>(context).add(RootTaskAddedEvent(newText));
-                        BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                        //BlocProvider.of<TaskBloc>(context).add(RootTaskAddedEvent(newText));
+                        //BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+                        context.read<TaskBloc>().add(RootTaskAddedEvent(newText));
+                        context.read<ProviderBloc>().add(RootEvent());
                       }
                     }
                   },
-                  backgroundColor: Theme.of(context).accentColor,
+                  backgroundColor: Theme.of(context).primaryColor,
                 ),
               ),
             ],

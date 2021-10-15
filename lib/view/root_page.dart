@@ -43,13 +43,14 @@ class RootPage extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           //shadowColor: Theme.of(context).primaryColor,
-          backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).primaryColor,
           foregroundColor: Theme.of(context).textTheme.headline6.color,
           title: Text(title),
           leading: IconButton(
             icon: Icon(Icons.brightness_4),
             onPressed: () {
-              BlocProvider.of<ThemeCubit>(context).toggleTheme();
+              //BlocProvider.of<ThemeCubit>(context).toggleTheme();
+              context.read<ThemeCubit>().toggleTheme();
               ThemeStateFile().writeState(1);
               print('Change theme');
             },
@@ -61,15 +62,19 @@ class RootPage extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   print("onTap: ${tasks[index].toMap()}");
-                  BlocProvider.of<CheckTaskBloc>(context)
+                  /*BlocProvider.of<CheckTaskBloc>(context)
                     .add(CheckTaskLoadSuccessEvent(tasks[index].id));
                   BlocProvider.of<ProviderBloc>(context)
-                    .add(CheckEvent(tasks[index]));
+                    .add(CheckEvent(tasks[index]));*/
+                  
+                  context.read<CheckTaskBloc>().add(CheckTaskLoadSuccessEvent(tasks[index].id));
+                  context.read<ProviderBloc>().add(CheckEvent(tasks[index]));
                 },
                 onLongPress: () {
                   print('longPress on ${tasks[index].text}');
-                  BlocProvider.of<ProviderBloc>(context)
-                      .add(UpdateEvent(tasks[index], null));
+                  /*BlocProvider.of<ProviderBloc>(context)
+                      .add(UpdateEvent(tasks[index], null));*/
+                  context.read<ProviderBloc>().add(UpdateEvent(tasks[index], null));
                 },
                 onHorizontalDragStart: (DragStartDetails start) {
                   print(start);
@@ -81,7 +86,7 @@ class RootPage extends StatelessWidget {
                           CircularProgressIndicator(
                             //value: 0.4,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).accentColor),
+                                Theme.of(context).primaryColor),
                           ),
                           Expanded(
                             child: Container(
@@ -94,12 +99,14 @@ class RootPage extends StatelessWidget {
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(80.0, 50.0)),
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  Theme.of(context).accentColor),
+                                  Theme.of(context).primaryColor),
                             ),
                             child: Text("Да"),
                             onPressed: () {
-                              BlocProvider.of<TaskBloc>(context)
-                                  .add(RootTaskDeletedEvent(tasks[index].id));
+                              //BlocProvider.of<TaskBloc>(context)
+                                //  .add(RootTaskDeletedEvent(tasks[index].id));
+
+                              context.read<TaskBloc>().add(RootTaskDeletedEvent(tasks[index].id));
                               ScaffoldMessenger.of(context)
                                   .removeCurrentSnackBar();
                             },
@@ -113,7 +120,7 @@ class RootPage extends StatelessWidget {
                   margin: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Theme.of(context).accentColor,
+                      color: Theme.of(context).primaryColor,
                       width: 1.5,
                     ),
                     borderRadius: BorderRadius.circular(30.0),
@@ -160,12 +167,13 @@ class RootPage extends StatelessWidget {
             }),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            BlocProvider.of<ProviderBloc>(context)
-                .add(DialogEvent(false, null, null));
+            //BlocProvider.of<ProviderBloc>(context)
+              //  .add(DialogEvent(false, null, null));
+            context.read<ProviderBloc>().add(DialogEvent(false, null, null));
           },
           label: Text('Задача'),
           icon: Icon(Icons.add),
-          backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).primaryColor,
         ),
       );
     });
@@ -183,7 +191,7 @@ class RootPage extends StatelessWidget {
       //leading: Text("0"),
       //center: Text("50"),
       //trailing: Text("100%"), // Задается в обьекте
-      progressColor: Theme.of(context).accentColor,
+      progressColor: Theme.of(context).primaryColor,
       linearStrokeCap: LinearStrokeCap.roundAll,
     );
   }

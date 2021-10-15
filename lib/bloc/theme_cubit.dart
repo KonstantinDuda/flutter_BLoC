@@ -29,7 +29,7 @@ class ThemeCubit extends Cubit<ThemeData> {
     brightness: Brightness.light,
     primaryColor: Colors.blue,
     primaryColorDark: Colors.orange,
-    accentColor: Colors.blue,
+    //accentColor: Colors.blue,
   );
 
   static final _darkTheme = ThemeData(
@@ -55,7 +55,7 @@ class ThemeCubit extends Cubit<ThemeData> {
     brightness: Brightness.dark,
     primaryColor: Colors.orange,
     primaryColorDark: Colors.blue,
-    accentColor: Colors.orange,
+    //accentColor: Colors.orange,
   );
 
   void toggleTheme() {

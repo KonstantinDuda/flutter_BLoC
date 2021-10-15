@@ -23,7 +23,11 @@ class UpdatePage extends StatelessWidget {
     print("build update page");
     print("Update Task == ${rootTask.toMap()}");
     return WillPopScope(
-      onWillPop: () async { BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+      onWillPop: () async { 
+        //BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+        checkTask == null 
+          ? context.read<ProviderBloc>().add(RootEvent())
+          : context.read<ProviderBloc>().add(CheckEvent(rootTask));
       return false; },
       child: checkTask == null ? checkTaskIsNull(rootTask) : checkTaskIsNotNull(rootTask, checkTask)
       );
@@ -57,7 +61,7 @@ class UpdatePage extends StatelessWidget {
                           CircularProgressIndicator(
                             //value: 0.4,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).accentColor),
+                                Theme.of(context).primaryColor),
                           ),
                           Expanded(
                             child: Container(
@@ -70,12 +74,14 @@ class UpdatePage extends StatelessWidget {
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(80.0, 50.0)),
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  Theme.of(context).accentColor),
+                                  Theme.of(context).primaryColor),
                             ),
                             child: Text("Да"),
                             onPressed: () {
-                              BlocProvider.of<TaskBloc>(context)
-                                  .add(RootTaskDeletedEvent(root.id));
+                              //BlocProvider.of<TaskBloc>(context)
+                                //  .add(RootTaskDeletedEvent(root.id));
+                              //print('delete ${root.toMap()}');
+                              context.read<TaskBloc>().add(RootTaskDeletedEvent(root.id));
                               ScaffoldMessenger.of(context)
                                   .removeCurrentSnackBar();
                             },
@@ -94,7 +100,7 @@ class UpdatePage extends StatelessWidget {
                           CircularProgressIndicator(
                             //value: 0.4,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).accentColor),
+                                Theme.of(context).primaryColor),
                           ),
                           Expanded(
                             child: Container(
@@ -107,17 +113,21 @@ class UpdatePage extends StatelessWidget {
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(80.0, 50.0)),
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  Theme.of(context).accentColor),
+                                  Theme.of(context).primaryColor),
                             ),
                             child: Text("Да"),
                             onPressed: () {
-                              BlocProvider.of<CheckTaskBloc>(context)
-                                  .add(CheckTaskDeletedEvent(check.id));
+                              //BlocProvider.of<CheckTaskBloc>(context)
+                                //  .add(CheckTaskDeletedEvent(check.id));
+
+                              context.read<CheckTaskBloc>().add(CheckTaskDeletedEvent(check.id));
                               ScaffoldMessenger.of(context)
                                   .removeCurrentSnackBar();
-                              BlocProvider.of<TaskBloc>(context).add(
-                                  RootTaskUpdateEvent(
-                                      root.id, 0, root.text, 0, -1));
+                              context.read<TaskBloc>().add(RootTaskUpdateEvent(root.id, 0, root.text, 0, -1));
+
+                              //BlocProvider.of<TaskBloc>(context).add(
+                                //  RootTaskUpdateEvent(
+                                  //    root.id, 0, root.text, 0, -1));
                             },
                           ),
                         ],
@@ -127,7 +137,7 @@ class UpdatePage extends StatelessWidget {
                 }
               },
               child: Icon(Icons.delete_forever_outlined),
-              backgroundColor: Theme.of(context).accentColor,
+              backgroundColor: Theme.of(context).primaryColor,
             ),
           ),
           Row(
@@ -139,16 +149,18 @@ class UpdatePage extends StatelessWidget {
               onPressed: () {
                 print('press Up');
                 if (checkTaskIsNull == true) {
-                  BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(
-                      rootTask.id, -1, rootTask.text, 0, 0));
+                  //BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(
+                    //  rootTask.id, -1, rootTask.text, 0, 0));
+                  context.read<TaskBloc>().add(RootTaskUpdateEvent(rootTask.id, -1, rootTask.text, 0, 0));
                 } else {
-                  BlocProvider.of<CheckTaskBloc>(context).add(
-                      CheckTaskUpdateEvent(
-                          checkTask.id, -1, checkTask.text, false));
+                  //BlocProvider.of<CheckTaskBloc>(context).add(
+                    //  CheckTaskUpdateEvent(
+                      //    checkTask.id, -1, checkTask.text, false));
+                  context.read<CheckTaskBloc>().add(CheckTaskUpdateEvent(checkTask.id, -1, checkTask.text, false));
                 }
               },
               child: Icon(Icons.arrow_upward),
-              backgroundColor: Theme.of(context).accentColor,
+              backgroundColor: Theme.of(context).primaryColor,
             ),
           ),
           Container(
@@ -157,16 +169,20 @@ class UpdatePage extends StatelessWidget {
               onPressed: () {
                 print('press Bottom');
                 if (checkTaskIsNull == true) {
-                  BlocProvider.of<TaskBloc>(context).add(
-                      RootTaskUpdateEvent(rootTask.id, 1, rootTask.text, 0, 0));
+                  //BlocProvider.of<TaskBloc>(context).add(
+                    //  RootTaskUpdateEvent(rootTask.id, 1, rootTask.text, 0, 0));
+                  context.read<TaskBloc>().add(RootTaskUpdateEvent(rootTask.id, 1, rootTask.text, 0, 0));
+                
                 } else {
-                  BlocProvider.of<CheckTaskBloc>(context).add(
-                      CheckTaskUpdateEvent(
-                          checkTask.id, 1, checkTask.text, false));
+                  //BlocProvider.of<CheckTaskBloc>(context).add(
+                    //  CheckTaskUpdateEvent(
+                      //    checkTask.id, 1, checkTask.text, false));
+                  context.read<CheckTaskBloc>().add(CheckTaskUpdateEvent(checkTask.id, 1, checkTask.text, false));
+                
                 }
               },
               child: Icon(Icons.arrow_downward),
-              backgroundColor: Theme.of(context).accentColor,
+              backgroundColor: Theme.of(context).primaryColor,
             ),
           ),],
           ),
@@ -176,17 +192,19 @@ class UpdatePage extends StatelessWidget {
               onPressed: () {
                 if (checkTaskIsNull == true) {
                   print('root rewrite');
-                  BlocProvider.of<ProviderBloc>(context)
-                      .add(DialogEvent(true, rootTask, null));
+                  //BlocProvider.of<ProviderBloc>(context)
+                    //  .add(DialogEvent(true, rootTask, null));
+                  context.read<ProviderBloc>().add(DialogEvent(true, rootTask, null));
                 } else {
                   print('check rewrite');
-                  BlocProvider.of<ProviderBloc>(context)
-                      .add(DialogEvent(true, rootTask, checkTask));
+                  //BlocProvider.of<ProviderBloc>(context)
+                    //  .add(DialogEvent(true, rootTask, checkTask));
+                  context.read<ProviderBloc>().add(DialogEvent(true, rootTask, checkTask));
                 }
               },
               label: Text('Редактировать'),
               icon: Icon(Icons.create),
-              backgroundColor: Theme.of(context).accentColor,
+              backgroundColor: Theme.of(context).primaryColor,
             ),
           ),
         ],
@@ -214,12 +232,13 @@ class UpdatePage extends StatelessWidget {
       //print('tasks == $tasks');
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).primaryColor,
           foregroundColor: Theme.of(context).textTheme.headline6.color,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+              //BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+              context.read<ProviderBloc>().add(RootEvent());
             },
           ),
           title: Text('Изменить ${rootTask.text}'),
@@ -235,8 +254,9 @@ class UpdatePage extends StatelessWidget {
                 onTap: () {
                   print(tasks[index].id);
                   print(tasks[index].text);
-                  BlocProvider.of<ProviderBloc>(context)
-                      .add(UpdateEvent(tasks[index], null));
+                  //BlocProvider.of<ProviderBloc>(context)
+                    //  .add(UpdateEvent(tasks[index], null));
+                  context.read<ProviderBloc>().add(UpdateEvent(tasks[index], null));
                 },
                 onLongPress: () {
                   print("Long press on ${tasks[index].id}");
@@ -308,12 +328,13 @@ class UpdatePage extends StatelessWidget {
       //print('tasks == $tasks');
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).primaryColor,
           foregroundColor: Theme.of(context).textTheme.headline6.color,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              BlocProvider.of<ProviderBloc>(context).add(CheckEvent(rootTask));
+              //BlocProvider.of<ProviderBloc>(context).add(CheckEvent(rootTask));
+              context.read<ProviderBloc>().add(CheckEvent(rootTask));
             },
           ),
           title: Text('Изменить ${checkTask.text}'),
@@ -329,8 +350,9 @@ class UpdatePage extends StatelessWidget {
                 onTap: () {
                   print(tasks[index].id);
                   print(tasks[index].text);
-                  BlocProvider.of<ProviderBloc>(context)
-                      .add(UpdateEvent(rootTask, tasks[index]));
+                  //BlocProvider.of<ProviderBloc>(context)
+                    //  .add(UpdateEvent(rootTask, tasks[index]));
+                  context.read<ProviderBloc>().add(UpdateEvent(rootTask, tasks[index]));
                 },
                 onLongPress: () {
                   print("Long press on ${tasks[index].id}");

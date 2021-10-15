@@ -24,7 +24,8 @@ class CheckPage extends StatelessWidget {
     //CheckTaskBloc().add(CheckTaskLoadSuccessEvent(task.id));
     print("build CheckPage on ${task.text}");
     return WillPopScope(
-      onWillPop: () async { BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+      onWillPop: () async { //BlocProvider.of<ProviderBloc>(context).add(RootEvent());
+        context.read<ProviderBloc>().add(RootEvent());
       return false; },
       child:
     BlocBuilder<CheckTaskBloc, CheckTaskState>(builder: (context, state) {
@@ -50,13 +51,14 @@ class CheckPage extends StatelessWidget {
       print('tasks == $tasks');
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).primaryColor,
           foregroundColor: Theme.of(context).textTheme.headline6.color,
           leading: IconButton(
             icon: Icon(Icons.arrow_back), 
             onPressed: () {
-              BlocProvider.of<ProviderBloc>(context)
-                    .add(RootEvent());
+              //BlocProvider.of<ProviderBloc>(context)
+                //    .add(RootEvent());
+              context.read<ProviderBloc>().add(RootEvent());
             },
           ),
           title: Text(task.text),
@@ -70,16 +72,20 @@ class CheckPage extends StatelessWidget {
                 onTap: () {
                   print("onTap: ${tasks[index].text}");
                   if(tasks[index].check == 1){
-                    BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, -1, 0));
+                    //BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, -1, 0));
+                    context.read<TaskBloc>().add(RootTaskUpdateEvent(task.id, 0, task.text, -1, 0));
                   } else if(tasks[index].check == 0) {
-                    BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, 1, 0));
+                    //BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, 1, 0));
+                    context.read<TaskBloc>().add(RootTaskUpdateEvent(task.id, 0, task.text, 1, 0));
                   }
-                  BlocProvider.of<CheckTaskBloc>(context).add(CheckTaskUpdateEvent(tasks[index].id, 0, tasks[index].text ,true));
+                  //BlocProvider.of<CheckTaskBloc>(context).add(CheckTaskUpdateEvent(tasks[index].id, 0, tasks[index].text ,true));
+                  context.read<CheckTaskBloc>().add(CheckTaskUpdateEvent(tasks[index].id, 0, tasks[index].text, true));
                 },
                 onLongPress: () {
                   print('longPress on ${tasks[index].text}');
-                  BlocProvider.of<ProviderBloc>(context)
-                      .add(UpdateEvent(task, tasks[index]));
+                  //BlocProvider.of<ProviderBloc>(context)
+                    //  .add(UpdateEvent(task, tasks[index]));
+                  context.read<ProviderBloc>().add(UpdateEvent(task, tasks[index]));
                 },
                 onHorizontalDragStart: (DragStartDetails start) {
                   print(start);
@@ -91,7 +97,7 @@ class CheckPage extends StatelessWidget {
                           CircularProgressIndicator(
                             //value: 0.4,
                             valueColor:
-                                AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
+                                AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
                           ),
                           Expanded(
                             child: Container(
@@ -104,15 +110,20 @@ class CheckPage extends StatelessWidget {
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(80.0, 50.0)),
                               backgroundColor:
-                                  MaterialStateProperty.all<Color>(Theme.of(context).accentColor),
+                                  MaterialStateProperty.all<Color>(Theme.of(context).primaryColor),
                             ),
                             child: Text("Да"),
                             onPressed: () {
-                              BlocProvider.of<CheckTaskBloc>(context)
-                                  .add(CheckTaskDeletedEvent(tasks[index].id));
+                              //BlocProvider.of<CheckTaskBloc>(context)
+                                //  .add(CheckTaskDeletedEvent(tasks[index].id));
+
+                              context.read<CheckTaskBloc>().add(CheckTaskDeletedEvent(tasks[index].id));
                               ScaffoldMessenger.of(context)
                                   .removeCurrentSnackBar();
-                              BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, 0, -1));
+                              context.read<TaskBloc>().add(RootTaskUpdateEvent(task.id, 0, task.text, 0, -1));
+
+
+                              //BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, 0, -1));
                   
                             },
                           ),
@@ -125,7 +136,7 @@ class CheckPage extends StatelessWidget {
                   margin: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Theme.of(context).accentColor,
+                      color: Theme.of(context).primaryColor,
                       width: 1.5,
                     ),
                     borderRadius: BorderRadius.circular(30.0),
@@ -157,11 +168,14 @@ class CheckPage extends StatelessWidget {
                           value: tasks[index].check == 1 ? true : false,
                           onChanged: (bool value) {
                             if(tasks[index].check == 1){
-                              BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, -1, 0));
+                              //BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, -1, 0));
+                              context.read<TaskBloc>().add(RootTaskUpdateEvent(task.id, 0, task.text, -1, 0));
                             } else if(tasks[index].check == 0) {
-                              BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, 1, 0));
+                              //BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(task.id, 0, task.text, 1, 0));
+                              context.read<TaskBloc>().add(RootTaskUpdateEvent(task.id, 0, task.text, 1, 0));
                             }
-                            BlocProvider.of<CheckTaskBloc>(context).add(CheckTaskUpdateEvent(tasks[index].id, 0, tasks[index].text ,true));
+                            //BlocProvider.of<CheckTaskBloc>(context).add(CheckTaskUpdateEvent(tasks[index].id, 0, tasks[index].text ,true));
+                            context.read<CheckTaskBloc>().add(CheckTaskUpdateEvent(tasks[index].id, 0, tasks[index].text, true));
                           },
                         ),
                       ),
@@ -172,11 +186,12 @@ class CheckPage extends StatelessWidget {
             }),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            BlocProvider.of<ProviderBloc>(context).add(DialogEvent(false, task, null));
+            //BlocProvider.of<ProviderBloc>(context).add(DialogEvent(false, task, null));
+            context.read<ProviderBloc>().add(DialogEvent(false, task, null));
           },
           label: Text('Задача'),
           icon: Icon(Icons.add),
-          backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).primaryColor,
         ),
       );
     }));

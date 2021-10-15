@@ -81,6 +81,27 @@ class UpdateState extends ProviderState {
 }
 
 class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
+  ProviderBloc() : super(RootState()) {
+    on<RootEvent>((event, emit) => emit(RootState()));
+    on<DialogEvent>((event, emit) => emit(DialogState(event.changeObj, event.rootTask, event.checkTask)));
+    on<UpdateEvent>((event, emit) => emit(UpdateState(event.rootTask, event.checkTask)));
+    on<CheckEvent>((event, emit) => emit(CheckState(event.task)));
+  }
+
+  /*@override 
+  Stream<ProviderState> mapEventToState(ProviderEvent event) async* {
+    if(event is RootEvent) {
+      yield RootState();
+    } else if(event is DialogEvent) {
+      yield DialogState(event.changeObj, event.rootTask, event.checkTask);
+    } else if(event is UpdateEvent) {
+      yield UpdateState(event.rootTask, event.checkTask);
+    } else if(event is CheckEvent) {
+      yield CheckState(event.task);
+    }*/
+  }
+
+/*class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   ProviderBloc() : super(RootState());
 
   @override 
@@ -93,37 +114,6 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
       yield UpdateState(event.rootTask, event.checkTask);
     } else if(event is CheckEvent) {
       yield CheckState(event.task);
-    }
-  }
-}
-/*import 'package:flutter_bloc/flutter_bloc.dart';
-
-enum ProviderEvent {rootPage, checkPage, dialog}
-
-//@immutable 
-abstract class ProviderState {}
-
-class RootState extends ProviderState {}
-
-class CheckState extends ProviderState {}
-
-class DialogState extends ProviderState {}
-
-class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
-  ProviderBloc() : super(RootState());
-
-  @override 
-  Stream<ProviderState> mapEventToState(ProviderEvent event) async* {
-    switch (event) {
-      case ProviderEvent.rootPage:
-        yield RootState();
-        break;
-      case ProviderEvent.checkPage:
-        yield CheckState();
-        break;
-      case ProviderEvent.dialog:
-        yield DialogState();
-        break;
     }
   }
 }*/

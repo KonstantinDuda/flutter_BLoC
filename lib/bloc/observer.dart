@@ -14,11 +14,11 @@ class SimpleBlocObserver extends BlocObserver {
   }
 
   // onChange(Cubit cubit, Change change)
-  @override
+  /*@override
   void onChange(Cubit cubit, Change change) {
     print(change);
     super.onChange(cubit, change);
-  }
+  }*/
 
   // Обязательно переопределять метод 
   //  onTransition(Bloc bloc, Transition transition) {}
@@ -33,8 +33,8 @@ class SimpleBlocObserver extends BlocObserver {
   //  исключения (Exception) мы должны перегрузить
   //  метод onError(Cubit cubit, Object error, StackTrace stackTrace)
   @override
-  void onError(Cubit cubit, Object error, StackTrace stackTrace) {
+  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
     print(error);
-    super.onError(cubit, error, stackTrace);
+    super.onError(bloc, error, stackTrace);
   }
 }

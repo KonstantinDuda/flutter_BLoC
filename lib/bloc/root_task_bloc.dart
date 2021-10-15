@@ -10,9 +10,14 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
   List<RootTask> list = [];
   final _database = new RootDBProvider();
 
-  TaskBloc({this.list}) : super(RootTaskLoadInProgressState());
+  TaskBloc({this.list}) : super(RootTaskLoadInProgressState()) {
+    on<RootTaskLoadSuccessEvent>(_taskLoadedToState);
+    on<RootTaskAddedEvent>(_taskAddedToState);
+    on<RootTaskUpdateEvent>(_taskUpdateToState);
+    on<RootTaskDeletedEvent>(_taskDeleteToState);
+  }
 
-  @override 
+  /*@override 
   Stream<RootTaskState> mapEventToState(RootTaskEvent event) async* {
     if(event is RootTaskLoadSuccessEvent) {
       yield* _taskLoadedToState();
@@ -23,9 +28,28 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
     } else if(event is RootTaskDeletedEvent) {
       yield* _taskDeleteToState(event);
     }
+  }*/
+
+  _taskLoadedToState(RootTaskLoadSuccessEvent event, Emitter<RootTaskState> emit) async {
+    try {
+      final newList = await _database.getAllTasks();
+      
+      print('_taskLoadedToState(); dbList == $newList');
+      
+      newList.sort((a,b) => a.position.compareTo(b.position));
+      for(RootTask element in newList) {
+        print("element = ${element.toMap()}");
+      }
+
+      emit(RootTaskLoadSuccessState(newList));
+      list = newList;
+    } catch (_) {
+      print('Fail Root _taskLoadedToState(); dbList');
+      emit(RootTaskLoadFailureState());
+    }
   }
 
-  Stream<RootTaskState> _taskLoadedToState() async* {
+  /*Stream<RootTaskState> _taskLoadedToState() async* {
     try {
       final newList = await _database.getAllTasks();
       //final newList = list;
@@ -45,9 +69,10 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
     //final db = list;
     //print('TaskLoadSuccessEvent to State; db == $db');
     //yield TaskLoadSuccessState(db);
-  }
+  }*/
 
-  Stream<RootTaskState> _taskAddedToState(RootTaskAddedEvent event) async* {
+  //Stream<RootTaskState> _taskAddedToState(RootTaskAddedEvent event) async* {
+  _taskAddedToState(RootTaskAddedEvent event, Emitter<RootTaskState> emit) async {
     if(state is RootTaskLoadSuccessState) {
       RootTask task;
       print('_taskAddedToState; list == $list');
@@ -81,13 +106,15 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
       for(RootTask element in newList) {
       print("element = ${element.toMap()}");
     }
-      yield RootTaskLoadSuccessState(newList);
+      //yield RootTaskLoadSuccessState(newList);
+      emit(RootTaskLoadSuccessState(newList));
       list = newList;
     }
   }
 
-  Stream<RootTaskState> _taskUpdateToState(RootTaskUpdateEvent event) async* {
-
+  //Stream<RootTaskState> _taskUpdateToState(RootTaskUpdateEvent event) async* {
+  _taskUpdateToState(RootTaskUpdateEvent event, Emitter<RootTaskState> emit) async {
+    //emit(RootTaskLoadInProgressState());
     RootTask updateTask;
     int updateTaskIndex;
     //int completedTaskCount;
@@ -196,12 +223,15 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
     for(RootTask element in newList) {
       print("element = ${element.toMap()}");
     }
-    yield RootTaskLoadInProgressState();
-    yield RootTaskLoadSuccessState(newList);
+    //yield RootTaskLoadInProgressState();
+    //yield RootTaskLoadSuccessState(newList);
+    emit(RootTaskLoadSuccessState(newList));
     list = newList;
   }
 
-  Stream<RootTaskState> _taskDeleteToState(RootTaskDeletedEvent event) async* {
+  //Stream<RootTaskState> _taskDeleteToState(RootTaskDeletedEvent event) async* {
+  _taskDeleteToState(RootTaskDeletedEvent event, Emitter<RootTaskState> emit) async {
+    //emit(RootTaskLoadInProgressState());
     if(state is RootTaskLoadSuccessState) {
       print("_taskDeleteToState; state is TaskLoadSuccessState");
       /*  Debug version
@@ -247,8 +277,9 @@ class TaskBloc extends Bloc<RootTaskEvent, RootTaskState> {
       print("new element == ${element.toMap()}");
     }
 
-    yield RootTaskLoadInProgressState();
-    yield RootTaskLoadSuccessState(listNew);
+    //yield RootTaskLoadInProgressState();
+    //yield RootTaskLoadSuccessState(listNew);
+    emit(RootTaskLoadSuccessState(listNew));
     list = listNew;
     }
   }

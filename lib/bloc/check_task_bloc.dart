@@ -10,9 +10,14 @@ class CheckTaskBloc extends Bloc<CheckTaskEvent, CheckTaskState> {
   List<CheckTask> list = [];
   final _database = new RootDBProvider();
 
-  CheckTaskBloc({this.list}) : super(CheckTaskLoadInProgressState());
+  CheckTaskBloc({this.list}) : super(CheckTaskLoadInProgressState()) {
+    on<CheckTaskLoadSuccessEvent>(_taskLoadedToState);
+    on<CheckTaskAddedEvent>(_taskAddedToState);
+    on<CheckTaskUpdateEvent>(_taskUpdateToState);
+    on<CheckTaskDeletedEvent>(_taskDeleteToState);
+  }
 
-  @override 
+  /*@override 
   Stream<CheckTaskState> mapEventToState(CheckTaskEvent event) async* {
     if(event is CheckTaskLoadSuccessEvent) {
       yield* _taskLoadedToState(event);
@@ -23,9 +28,10 @@ class CheckTaskBloc extends Bloc<CheckTaskEvent, CheckTaskState> {
     } else if(event is CheckTaskDeletedEvent) {
       yield* _taskDeleteToState(event);
     }
-  }
+  }*/
 
-  Stream<CheckTaskState> _taskLoadedToState(CheckTaskLoadSuccessEvent event) async* {
+  //Stream<CheckTaskState> _taskLoadedToState(CheckTaskLoadSuccessEvent event) async* {
+  _taskLoadedToState(CheckTaskLoadSuccessEvent event, Emitter<CheckTaskState> emit) async {
     try {
       print('event.rootID == ${event.rootID}');
       final newList = await _database.getGroupTasksCheck(event.rootID);
@@ -43,18 +49,21 @@ class CheckTaskBloc extends Bloc<CheckTaskEvent, CheckTaskState> {
       for(CheckTask element in newList) {
         print("element = ${element.toMap()}");
       }
-      yield CheckTaskLoadSuccessState(newList);
+      //yield CheckTaskLoadSuccessState(newList);
+      emit(CheckTaskLoadSuccessState(newList));
       list = newList;
     } catch (_) {
       print('Fail _taskLoadedToState(); dbList');
-      yield CheckTaskLoadFailureState();
+      //yield CheckTaskLoadFailureState();
+      emit(CheckTaskLoadFailureState());
     }
     //final db = list;
     //print('TaskLoadSuccessEvent to State; db == $db');
     //yield TaskLoadSuccessState(db);
   }
 
-  Stream<CheckTaskState> _taskAddedToState(CheckTaskAddedEvent event) async* {
+  //Stream<CheckTaskState> _taskAddedToState(CheckTaskAddedEvent event) async* {
+  _taskAddedToState(CheckTaskAddedEvent event, Emitter<CheckTaskState> emit) async {
     if(state is CheckTaskLoadSuccessState) {
       CheckTask task;
       print('_taskAddedToState; list == $list');
@@ -92,13 +101,15 @@ class CheckTaskBloc extends Bloc<CheckTaskEvent, CheckTaskState> {
       for(CheckTask element in newList) {
       print("element = ${element.toMap()}");
     }
-      yield CheckTaskLoadSuccessState(newList);
+      //yield CheckTaskLoadSuccessState(newList);
+      emit(CheckTaskLoadSuccessState(newList));
       list = newList;
     }
   }
 
-  Stream<CheckTaskState> _taskUpdateToState(CheckTaskUpdateEvent event) async* {
-
+  //Stream<CheckTaskState> _taskUpdateToState(CheckTaskUpdateEvent event) async* {
+  _taskUpdateToState(CheckTaskUpdateEvent event, Emitter<CheckTaskState> emit) async {
+    //emit(CheckTaskLoadInProgressState());
     CheckTask updateTask;
     int updateTaskIndex;
     
@@ -176,12 +187,15 @@ class CheckTaskBloc extends Bloc<CheckTaskEvent, CheckTaskState> {
     for(CheckTask element in newList) {
       print("element = ${element.toMap()}");
     }
-    yield CheckTaskLoadInProgressState();
-    yield CheckTaskLoadSuccessState(newList);
+    //yield CheckTaskLoadInProgressState();
+    //yield CheckTaskLoadSuccessState(newList);
+    emit(CheckTaskLoadSuccessState(newList));
     list = newList;
   }
 
-  Stream<CheckTaskState> _taskDeleteToState(CheckTaskDeletedEvent event) async* {
+  //Stream<CheckTaskState> _taskDeleteToState(CheckTaskDeletedEvent event) async* {
+  _taskDeleteToState(CheckTaskDeletedEvent event, Emitter<CheckTaskState> emit) async {
+    //emit(CheckTaskLoadInProgressState());
     if(state is CheckTaskLoadSuccessState) {
       print("_taskDeleteToState; state is TaskLoadSuccessState");
       /*  Debug version
@@ -232,9 +246,10 @@ class CheckTaskBloc extends Bloc<CheckTaskEvent, CheckTaskState> {
       print("new element == ${element.toMap()}");
     }
 
-    // TODO исправить все подобные случаи, возможно созданием конструктора копирования
-    yield CheckTaskLoadInProgressState();
-    yield CheckTaskLoadSuccessState(listNew);
+    //yield CheckTaskLoadInProgressState();
+    //yield CheckTaskLoadSuccessState(listNew);
+    emit(CheckTaskLoadInProgressState());
+    emit(CheckTaskLoadSuccessState(listNew));
     list = listNew;
     }
   }

@@ -16,8 +16,8 @@ import 'bloc/observer.dart';
 import 'bloc/theme_cubit.dart';
 import 'bloc/provider_bloc.dart';
 
-import 'database/root_task.dart';
-import 'database/check_task.dart';
+//import 'database/root_task.dart';
+//import 'database/check_task.dart';
 import 'database/root_task_event.dart';
 import 'database/check_task_event.dart';
 import 'database/theme_state_file.dart';
@@ -81,9 +81,9 @@ class App extends StatelessWidget {
     // Может использоваться для предоставления существующего 
     // блока новой части дерева виджетов
     return BlocProvider(
-      create: (_) => TaskBloc(list: new List<RootTask>())..add(RootTaskLoadSuccessEvent()),//CounterBloc(), 
+      create: (_) => TaskBloc(list: [] /*new List<RootTask>()*/)..add(RootTaskLoadSuccessEvent()),//CounterBloc(), 
       child: BlocProvider(
-        create: (_) => CheckTaskBloc(list: new List<CheckTask>())..add(CheckTaskLoadSuccessEvent(null)),
+        create: (_) => CheckTaskBloc(list: [] /*new List<CheckTask>()*/)..add(CheckTaskLoadSuccessEvent(null)),
         child: BlocProvider(
       // Возвращает ThemeCubit через context
       create: (_) {
@@ -118,7 +118,7 @@ class App extends StatelessWidget {
                 } else if(state is DialogState) {
                   print("Dialog State");
                   return MyDialog(state.changeObj, state.rootTask, state.checkTask);
-                }
+                } else {return RootPage();}
               }//=> state is RootState ? HorizontalPage() /*RootPage()*/ : CheckPage(),
             ),
             /*routes: {
