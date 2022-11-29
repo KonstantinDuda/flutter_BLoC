@@ -18,7 +18,7 @@ class HorizontalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TaskBloc, RootTaskState>(builder: (context, state) {
-      List<RootTask> tasks;
+      List<RootTaskNew> tasks;
       if (state is RootTaskLoadSuccessState) {
         if (state.tasks == null) {
           tasks = [];
@@ -62,12 +62,12 @@ class HorizontalPage extends StatelessWidget {
   }
 
   _buildVerticalLayout() {
-    return RootPage();
+    return RootPageState();
     //return CheckPage();
   }
 
   _buildHorizontalLayout(BuildContext context) {
-    return RootPage();
+    return RootPageState();
     //return CheckPage();
     /*return Scaffold(
       appBar: AppBar(title: Text('Horisontal orientation',
