@@ -9,7 +9,7 @@ class SimpleBlocObserver extends BlocObserver {
   //  onEvent(Bloc bloc, Object event)
   @override
   void onEvent(Bloc bloc, Object event) {
-    print('OnEvent myObserver. event == $event');
+    print(event);
     super.onEvent(bloc, event);
   }
 
@@ -26,7 +26,7 @@ class SimpleBlocObserver extends BlocObserver {
   //  использовать этот BlocObserver
   @override
   void onTransition(Bloc bloc, Transition transition) {
-    print('onTransition myObserver. event == $transition');
+    print(transition);
     super.onTransition(bloc, transition);
   }
   // Для возможности делать что-то в ответ на все
@@ -34,7 +34,7 @@ class SimpleBlocObserver extends BlocObserver {
   //  метод onError(Cubit cubit, Object error, StackTrace stackTrace)
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    print('onError myObserver. error == $error');
+    print(error);
     super.onError(bloc, error, stackTrace);
   }
 }

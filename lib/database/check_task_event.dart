@@ -20,17 +20,6 @@ class CheckTaskLoadSuccessEvent extends CheckTaskEvent {
   @override
   List<Object> get props => [rootID];
 }
-
-class CheckTaskFirstLoadEvent extends CheckTaskEvent {
-  final double screenHeight;
-  final double buttonHeight;
-  final double buttonsHeight;
-
-  CheckTaskFirstLoadEvent(this.screenHeight, this.buttonHeight, this.buttonsHeight);
-
-  @override 
-  List<Object> get props => [screenHeight, buttonHeight, buttonsHeight];
-}
 // Ошибка загрузки
 //class TaskLoadFailureEvent extends TaskEvent {}
 
@@ -46,7 +35,7 @@ class CheckTaskAddedEvent extends CheckTaskEvent {
 }
 
 // Событие обновления обьекта
-/*class CheckTaskUpdateEvent extends CheckTaskEvent {
+class CheckTaskUpdateEvent extends CheckTaskEvent {
   final int id;
   final int newPosition;
   final String newText;
@@ -56,56 +45,6 @@ class CheckTaskAddedEvent extends CheckTaskEvent {
 
   @override 
   List<Object> get props => [id, newPosition, newText, checkBox];
-}*/
-
-class CheckTaskUpdateTextEvent extends CheckTaskEvent {
-  final int id;
-  final String newText;
-
-  CheckTaskUpdateTextEvent(this.id, this.newText);
-
-  @override 
-  List<Object> get props => [id, newText];
-}
-
-class CheckTaskUpdatePositionEvent extends CheckTaskEvent {
-  final int id;
-  final int newPosition;
-
-  CheckTaskUpdatePositionEvent(this.id, this.newPosition);
-
-  @override 
-  List<Object> get props => [id, newPosition];
-}
-
-class CheckTaskUpdateCheckBoxEvent extends CheckTaskEvent {
-  final int id;
-  //final bool checkBox;
-
-  CheckTaskUpdateCheckBoxEvent(this.id);
-
-  @override 
-  List<Object> get props => [id];
-}
-
-class CheckTaskUpdateMarginsEvent extends CheckTaskEvent {
-  final int id;
-
-  CheckTaskUpdateMarginsEvent(this.id);
-
-  @override 
-  List<Object> get props => [id];
-}
-
-class CheckTaskUpdateHeightsEvent extends CheckTaskEvent {
-  final int id;
-  final double height;
-  final double updateHeight;
-
-  CheckTaskUpdateHeightsEvent(this.id, this.height, this.updateHeight);
-
-  @override 
-  List<Object> get props => [id, height, updateHeight];
 }
 
 // События удаления обьекта

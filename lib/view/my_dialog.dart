@@ -14,10 +14,10 @@ import '../database/check_task_event.dart';
 class MyDialog extends StatelessWidget {
   
   final bool changeObj;
-  final RootTaskNew rootTask;
-  final CheckTaskNew checkTask;
+  final RootTask rootTask;
+  final CheckTask checkTask;
   MyDialog(this.changeObj, this.rootTask, this.checkTask);
-  
+
   String newText = '';
 
   @override
@@ -121,13 +121,13 @@ class MyDialog extends StatelessWidget {
                         print('if(checkTask != null && rootTask != null)');
                         //BlocProvider.of<CheckTaskBloc>(context).add(CheckTaskUpdateEvent(checkTask.id, 0, newText, false));
                         //BlocProvider.of<ProviderBloc>(context).add(CheckEvent(rootTask));
-                        context.read<CheckTaskBloc>().add(CheckTaskUpdateTextEvent(checkTask.id, newText));
+                        context.read<CheckTaskBloc>().add(CheckTaskUpdateEvent(checkTask.id, 0, newText, false));
                         context.read<ProviderBloc>().add(CheckEvent(rootTask));
                       } else if(rootTask != null && checkTask == null) {
                         print('if(rootTask != null && checkTask == null)');
                         //BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(rootTask.id, 0, newText, 0, 0));
                         //BlocProvider.of<ProviderBloc>(context).add(RootEvent());
-                        context.read<TaskBloc>().add(RootTaskUpdateTextEvent(rootTask.id, newText)/*RootTaskUpdateEvent(rootTask.id, 0, newText, 0, 0)*/);
+                        context.read<TaskBloc>().add(RootTaskUpdateEvent(rootTask.id, 0, newText, 0, 0));
                         context.read<ProviderBloc>().add(RootEvent());
                       }
                     } else {
@@ -137,7 +137,7 @@ class MyDialog extends StatelessWidget {
                         //BlocProvider.of<TaskBloc>(context).add(RootTaskUpdateEvent(rootTask.id, 0, rootTask.text, 0, 1));
                         //BlocProvider.of<ProviderBloc>(context).add(CheckEvent(rootTask));
                         context.read<CheckTaskBloc>().add(CheckTaskAddedEvent(newText, rootTask.id));
-                        context.read<TaskBloc>().add(RootTaskUpdateCountEvent(rootTask.id, 1, 0)/*RootTaskUpdateEvent(rootTask.id, 0, rootTask.text, 0, 1)*/);
+                        context.read<TaskBloc>().add(RootTaskUpdateEvent(rootTask.id, 0, rootTask.text, 0, 1));
                         context.read<ProviderBloc>().add(CheckEvent(rootTask));
                       } else {
                         print('else');

@@ -12,7 +12,7 @@ class CheckTaskLoadInProgressState extends CheckTaskState {}
 
 // Состояние успешно загруженных данных
 class CheckTaskLoadSuccessState extends CheckTaskState {
-  final List<CheckTaskNew> tasks;
+  final List<CheckTask> tasks;
 
   CheckTaskLoadSuccessState([this.tasks]);
 

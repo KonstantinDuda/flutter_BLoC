@@ -12,7 +12,7 @@ class RootTaskLoadInProgressState extends RootTaskState {}
 
 // Состояние успешно загруженных данных
 class RootTaskLoadSuccessState extends RootTaskState {
-  final List<RootTaskNew> tasks;
+  final List<RootTask> tasks;
 
   RootTaskLoadSuccessState([this.tasks]);
 
