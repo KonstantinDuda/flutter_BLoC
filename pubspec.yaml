@@ -1,9 +1,9 @@
 name: task_sheduler
 description: A new Flutter project.
 
-publish_to: 'none' 
+publish_to: 'https://play.google.com/store/apps/details?id=com.scheduler.release' 
 
-version: 1.5.0+1
+version: 2.0.0+1
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
